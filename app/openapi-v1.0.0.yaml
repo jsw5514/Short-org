@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: ShortOrg Backend API
+  description: |
+    ShortOrg Backend 서비스의 API 명세서입니다.
+    기사 조회, 로그인, 마이페이지, 댓글 기능을 제공합니다.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: 기본 API 서버
+
+paths:
+  /login:
+    post:
+      summary: 로그인
+      description: 입력한 ID와 PW로 로그인합니다.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 로그인 성공
+        '400':
+          description: 잘못된 요청 형식
+        '401':
+          description: 로그인 실패
+  
+  /logout:
+    get:
+      summary: 로그아웃
+      description: 로그아웃합니다.
+      operationId: logout
+      responses:
+        '200':
+          description: 로그아웃 성공
+  
+  /users:
+    post:
+      summary: 회원가입
+      description: 신규 사용자를 등록합니다.
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - password
+              properties:
+                id:
+                  type: string
+                  example: user123
+                password:
+                  type: string
+                  example: 1234
+      responses:
+        "201":
+          description: 회원가입 성공
+        "400":
+          description: 입력값 오류
+        "409":
+          description: 아이디 중복
+
+  /users/exists:
+    get:
+      summary: 아이디 중복 체크
+      description: 입력한 로그인 아이디의 중복 여부를 확인합니다.
+      tags:
+        - User
+      parameters:
+        - name: loginId
+          in: query
+          required: true
+          description: 중복 확인할 로그인 ID
+          schema:
+            type: string
+            example: user123
+      responses:
+        "200":
+          description: 조회 성공
+        "400":
+          description: 요청 파라미터 누락
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 사용자 ID
+          example: "testuser"
+        password:
+          type: string
+          description: 사용자 비밀번호
+          example: "testpw"
+      required:
+        - id
+        - password
