@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.1.1
+  version: 1.1.2
 
 servers:
   - url: /api
@@ -721,6 +721,10 @@ components:
       type: object
       required: [category, title, content, meetingTime, longitude, latitude, joinMode]
       properties:
+        userId:
+          type: string
+          description: 작성자 id
+          example: 'user01'
         category:
           $ref: '#/components/schemas/PostCategory'
         title:
