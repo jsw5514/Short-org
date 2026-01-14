@@ -4,10 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class JwtTokenProvider {
     private final long refreshTtlMs;
 
     public JwtTokenProvider(String secret, long accessTtlMs, long refreshTtlMs) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         this.accessTtlMs = accessTtlMs;
         this.refreshTtlMs = refreshTtlMs;
     }
