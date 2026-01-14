@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,8 +37,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
                 switch (jwt.getTokenType(token)) {
-                    case "refresh"-> authorities.add(new SimpleGrantedAuthority("REFRESH"));
-                    case "access"-> authorities.add(new SimpleGrantedAuthority("ACCESS"));
+                    case "refresh"-> authorities.add(new SimpleGrantedAuthority("ROLE_REFRESH"));
+                    case "access"-> authorities.add(new SimpleGrantedAuthority("ROLE_ACCESS"));
                 }
                 
                 var auth = new UsernamePasswordAuthenticationToken(

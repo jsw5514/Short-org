@@ -1,0 +1,20 @@
+### 1) 로그인 요청 (응답에서 accessToken 뽑아서 전역 변수로 저장)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": "user01",
+  "password": "1234"
+}
+
+> {%
+    // 응답 JSON 예: { "accessToken": "eyJ..." , "refreshToken": "..." }
+    client.global.set("accessToken", response.body.accessToken);
+%}
+
+
+### 2) 방금 저장한 토큰으로 다음 요청 호출
+GET http://localhost:8080/api/auth/test
+Accept: application/json
+Authorization: Bearer {{accessToken}}

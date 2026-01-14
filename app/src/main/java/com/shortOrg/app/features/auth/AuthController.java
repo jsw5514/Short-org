@@ -31,4 +31,9 @@ public class AuthController {
 
         return ResponseEntity.ok(new TokenResponse(access, refresh));
     }
+    
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("test");
+    }
 }
