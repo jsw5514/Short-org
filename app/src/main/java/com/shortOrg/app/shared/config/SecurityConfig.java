@@ -25,13 +25,18 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable()) //cors 비활성화
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //세션 비활성화
                 .formLogin(f -> f.disable()) //기본 폼 로그인 비활성화
+                .logout(logout -> {
+                    logout.logoutUrl("/logout");
+                    
+                })
                 .authorizeHttpRequests(auth -> auth  //url별 허용/거부 정책 설정
                         .requestMatchers(
-                                "/login", //로그인
+                                "/api/auth/login", //로그인
                                 "/api/users", //회원가입
                                 "/api/users/exists" //id 중복 확인
                                 ).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/auth/refresh").hasRole("REFRESH")
+                        .anyRequest().hasRole("ACCESS")
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //jwt 인증을 처리하는 필터 추가
                 .build();
