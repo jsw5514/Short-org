@@ -1,5 +1,6 @@
 package com.shortOrg.app.features.user;
 
+import com.shortOrg.app.domain.User;
 import com.shortOrg.app.features.user.dto.SignupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,19 @@ public class UserController {
 
     @GetMapping("/users/{userId}/profile")
     public ResponseEntity<?> getProfile(@PathVariable("userId") String id){
+        try {
+            User user = userService.userProfile(id);
 
+            if(user != null){
+                return ResponseEntity.ok(user);
+            } else {
+                // not found
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않음");
+            }
+
+        } catch (Exception e){
+            // 서버 내부 오류 발생
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("실패");
+        }
     }
 }

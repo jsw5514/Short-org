@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,10 +25,20 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setAvgRate(null);
         user.setOrgTime(0L);
+
         userRepository.save(user);
     }
 
     public boolean idCheck(String id) {
         return userRepository.existsById(id);
+    }
+
+    public User userProfile(String id) {
+        Optional<User> oUser = userRepository.findById(id);
+        User user = null;
+        if (oUser.isPresent()) {
+            user = oUser.get();
+        }
+        return user;
     }
 }
