@@ -7,7 +7,6 @@ import com.shortOrg.app.repository.PostRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class PostService {
 
     @Autowired
@@ -28,7 +27,7 @@ public class PostService {
     }
 
 
-    public void createPost(PostCreateRequest postCreate) {
+    public void createPost(String userId, PostCreateRequest postCreate) {
         Post post = new Post();
         post.setId(null);
         post.setCategory(postCreate.getCategory());
@@ -39,7 +38,7 @@ public class PostService {
         post.setLatitude(postCreate.getLatitude());
         post.setJoinMode(post.getJoinMode());
 
-        post.setWriterId(entityManager.getReference(User.class, postCreate.getUserId()));
+        post.setWriterId(entityManager.getReference(User.class, userId));
         post.setLastModified(null);
 
         postRepository.save(post);

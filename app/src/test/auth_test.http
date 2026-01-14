@@ -18,3 +18,24 @@ Accept: application/json
 GET http://localhost:8080/api/auth/test
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+### adsffda
+GET http://localhost:8080/api/posts/category/EXERCISE
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "user01",
+  "category": "운동",
+  "title": "같이 운동하실 분!",
+  "content": "저녁 7시에 러닝하실 분 구해요.",
+  "meetingTime": "2026-01-13T19:00:00",
+  "longitude": 127.004794,
+  "latitude": 37.504296,
+  "joinMode": "APPROVAL"
+}

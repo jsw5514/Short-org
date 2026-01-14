@@ -6,6 +6,7 @@ import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,9 +31,9 @@ public class PostController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createPost(@RequestBody PostCreateRequest postCreate) {
+    public ResponseEntity<?> createPost(@RequestBody PostCreateRequest postCreate, Authentication authentication) {
         try {
-            postService.createPost(postCreate);
+            postService.createPost(authentication.getName(), postCreate);
             return ResponseEntity.ok("성공");
         } catch (Exception e) {
             throw new RuntimeException(e);
