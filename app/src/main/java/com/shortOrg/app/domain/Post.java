@@ -1,9 +1,13 @@
 package com.shortOrg.app.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "post")
 public class Post {
@@ -20,7 +24,7 @@ public class Post {
     private String content;
 
     @Column(name = "date_time")
-    private LocalDateTime dateTime = LocalDateTime.now();
+    private LocalDateTime mettingTime;
 
     private Double longitude;
     private Double latitude;
