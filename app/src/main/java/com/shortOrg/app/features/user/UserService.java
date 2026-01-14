@@ -3,20 +3,24 @@ package com.shortOrg.app.features.user;
 import com.shortOrg.app.domain.User;
 import com.shortOrg.app.features.user.dto.SignupRequest;
 import com.shortOrg.app.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
-
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // void와 차이점이 뭐야
     public void userInsert(SignupRequest signupRequest) {
         User user = new User();
         user.setId(signupRequest.getId());
-        user.setPassword(signupRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setAvgRate(null);
         user.setOrgTime(0L);
         userRepository.save(user);
