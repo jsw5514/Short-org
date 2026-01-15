@@ -1,9 +1,8 @@
 package com.shortOrg.app.features.post;
 
 import com.shortOrg.app.domain.Post;
-import com.shortOrg.app.features.user.dto.PostCreateRequest;
-import org.hibernate.annotations.NotFound;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.shortOrg.app.shared.dto.PostCreateRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,10 +12,9 @@ import java.util.List;
 
 @RequestMapping("/api/posts")
 @RestController
+@RequiredArgsConstructor
 public class PostController {
-
-    @Autowired
-    PostService postService;
+    private final PostService postService;
 
     @GetMapping("/category/{category}")
     public ResponseEntity<?> getPosts(@PathVariable("category") String category){

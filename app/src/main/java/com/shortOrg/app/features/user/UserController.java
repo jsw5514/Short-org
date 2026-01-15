@@ -1,18 +1,17 @@
 package com.shortOrg.app.features.user;
 
 import com.shortOrg.app.domain.User;
-import com.shortOrg.app.features.user.dto.SignupRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.shortOrg.app.shared.dto.SignupRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api")
 @RestController
+@RequiredArgsConstructor
 public class UserController {
-
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
     @PostMapping("/users")
     public ResponseEntity<?> userInsert(@RequestBody SignupRequest signupRequest) {

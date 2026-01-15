@@ -1,4 +1,4 @@
-package com.shortOrg.app.features.user.dto;
+package com.shortOrg.app.shared.dto;
 
 import lombok.Data;
 

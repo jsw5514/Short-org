@@ -1,11 +1,10 @@
 package com.shortOrg.app.features.user;
 
 import com.shortOrg.app.domain.User;
-import com.shortOrg.app.features.user.dto.SignupRequest;
+import com.shortOrg.app.shared.dto.SignupRequest;
 import com.shortOrg.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -2,11 +2,10 @@ package com.shortOrg.app.features.post;
 
 import com.shortOrg.app.domain.Post;
 import com.shortOrg.app.domain.User;
-import com.shortOrg.app.features.user.dto.PostCreateRequest;
 import com.shortOrg.app.repository.PostRepository;
+import com.shortOrg.app.shared.dto.PostCreateRequest;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
-
-    @Autowired
-    PostRepository postRepository;
+    private final PostRepository postRepository;
     private final EntityManager entityManager;
 
     public List<Post> getPosts(String category) {
