@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.1.5
+  version: 1.1.6
 
 servers:
   - url: /api
@@ -383,6 +383,15 @@ paths:
           required: true
           schema: 
             type: integer
+            example: 12
+        - name: lastUpdatedTime
+          in: query
+          description: 마지막으로 갱신한 채팅 시간
+          required: false
+          schema: 
+            type: string
+            format: date-time
+            example: "2026-01-13T14:30:00"
       responses:
         "200":
           description: 채팅 목록 반환 성공
