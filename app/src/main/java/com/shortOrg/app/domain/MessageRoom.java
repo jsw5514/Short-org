@@ -35,6 +35,4 @@ public class MessageRoom {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "last_message_id", nullable = false)
     private Message lastMessage;
-    
-    LocalDateTime lastMessageTime;
 }
