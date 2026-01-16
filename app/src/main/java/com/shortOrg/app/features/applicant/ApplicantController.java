@@ -4,6 +4,7 @@ import com.shortOrg.app.domain.Applicant;
 import com.shortOrg.app.domain.Post;
 import com.shortOrg.app.domain.User;
 import com.shortOrg.app.shared.dto.ApplicantDto;
+import com.shortOrg.app.shared.dto.ApplicantStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -46,5 +47,12 @@ public class ApplicantController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // 모임 신청 처리
+    @PatchMapping("/{postId}/applicants/{userId}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long postId, @PathVariable String userId, @RequestBody ApplicantStatus state) {
+        applicantService.updateStatus(postId, userId, state);
+        return ResponseEntity.ok("변경 성공");
     }
 }

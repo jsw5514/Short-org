@@ -65,4 +65,11 @@ public class ApplicantService {
 
         return applicantDto;
     }
+
+    @Transactional
+    public void updateStatus(Long postId, String userId, ApplicantStatus state) {
+        Applicant applicant = applicantRepository.findByPostIdAndUserId(postId, userId);
+
+        applicant.setState(state);
+    }
 }
