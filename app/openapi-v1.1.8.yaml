@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.1.4
+  version: 1.1.8
 
 servers:
   - url: /api
@@ -349,10 +349,107 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  
+  /message/room:
+    get:
+      summary: 채팅방 목록
+      description: 자신이 속한 채팅방 목록을 확인합니다.
+      operationId: showMessageRoomList
+      tags: [Message]
+      responses:
+        "200":
+          description: 채팅방 목록 반환 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageRoomResponse'
+        "403":
+          description: 로그인되지 않았음
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /messages:
+  /message/room/{roomId}:
+    get:
+      summary: 채팅방의 채팅목록
+      description: 채팅방의 채팅(쪽지) 목록을 반환합니다.
+      tags: [Message]
+      operationId: showMessagesWithRoom
+      parameters:
+        - name: roomId
+          in: path
+          description: 확인할 채팅방 id
+          required: true
+          schema: 
+            type: integer
+            example: 12
+        - name: lastUpdatedTime
+          in: query
+          description: 마지막으로 갱신한 채팅 시간
+          required: false
+          schema: 
+            type: string
+            format: date-time
+            example: "2026-01-13T14:30:00"
+      responses:
+        "200":
+          description: 채팅 목록 반환 성공
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Message'
+        "404":
+          description: 채팅방을 찾을 수 없음
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ErrorResponse'
+    
     post:
-      summary: 쪽지 보내기
+      summary: 쪽지 보내기(채팅방 id를 알고 있을때)
+      description: 쪽지를 채팅방에 전송합니다.
+      operationId: sendChatToRoom
+      tags: [Message]
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          description: 쪽지를 전송할 채팅방 ID
+          schema:
+            type: integer
+            example: 30
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+      responses:
+        "201":
+          description: 전송 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "400":
+          description: 입력값 오류
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: 수신자/게시글을 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /message:
+    post:
+      summary: 쪽지 보내기(채팅방이 없거나 채팅방 id를 모를때)
       description: 특정 사용자에게 쪽지를 전송합니다.
       operationId: sendMessage
       tags: [Message]
@@ -361,13 +458,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MessageSendRequest'
+              $ref: '#/components/schemas/EnsureRoomAndSendMessageRequest'
       responses:
         "201":
           description: 전송 성공
           content:
             application/json:
-              schema:
+              schema: 
                 $ref: '#/components/schemas/Message'
         "400":
           description: 입력값 오류
@@ -396,12 +493,7 @@ paths:
           schema:
             type: integer
             example: 46
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApplicantApplyRequest'
+              
       responses:
         "201":
           description: 신청 성공
@@ -627,6 +719,13 @@ components:
         password:
           type: string
           example: 1234
+        birth:
+          type: string
+          format: date
+          example: "2026-01-13"
+        gender:
+          type: string
+          enum: [남, 여]
 
     ExistsResponse:
       description: 아이디 존재 여부
@@ -645,6 +744,13 @@ components:
           type: string
           description: 사용자 ID
           example: testuser
+        birth:
+          type: string
+          format: date
+          example: "2026-01-13"
+        gender:
+          type: string
+          enum: [남, 여]
         avgRate:
           type: number
           description: 평균 평점
@@ -777,25 +883,27 @@ components:
       description: 쪽지
       type: object
       properties:
-        id:
+        messageId:
           type: integer
+          description: 쪽지 id
           example: 1001
+        roomId:
+          type: integer
+          description: 쪽지가 보내진 채팅방 id
+          example: 35
         postId:
           type: integer
+          description: 쪽지가 속한 게시글 id
           example: 46
         senderId:
           type: string
           example: testuser
-        receiverId:
-          type: string
-          example: otherUser
         content:
           type: string
           example: '모임 관련 문의드립니다!'
-      required: [id, postId, senderId, receiverId, content]
       
-    MessageSendRequest:
-      description: 쪽지 전송 요청
+    EnsureRoomAndSendMessageRequest:
+      description: 쪽지 전송 요청(채팅방이 없거나 있는지 불확실할때)
       type: object
       required: [postId, receiverId, content]
       properties:
@@ -811,6 +919,38 @@ components:
           type: string
           description: 쪽지 내용
           example: '모임 관련 문의드립니다!'
+          
+    SendMessageRequest:
+      description: 쪽지 전송 요청(채팅방이 있을때)
+      type: object
+      required: [roomId, content]
+      properties: 
+        roomId:
+          type: integer
+          description: 채팅방 id
+        content:
+          type: string
+    
+    MessageRoomResponse:
+      description: 특정 사용자의 채팅방 정보
+      type: object
+      properties: 
+        roomId:
+          type: integer
+          description: 채팅방 id
+          example: 15
+        opponentId:
+          type: string
+          description: 채팅 상대 id
+          example: otherUser
+        postId:
+          type: integer
+          description: 게시글 id
+          example: 67
+        unReadCount:
+          type: integer
+          description: 해당 사용자가 읽지 않은 메시지 갯수
+          example: 14
 
     Applicant:
       description: 모임 참가 신청 상태
@@ -829,15 +969,6 @@ components:
           enum: [APPROVED, REJECTED, PENDING]
           description: 신청 처리 상태(수락/거절/대기중)
       required: [postId, userId, state]
-
-    ApplicantApplyRequest:
-      description: 모임 신청 요청(확장 대비). 현재는 비워도 됨.
-      type: object
-      properties:
-        message:
-          type: string
-          description: 신청 메시지(선택)
-          example: '참가하고 싶어요!'
 
     ApplicantDecisionRequest:
       description: 모임 신청 처리 요청
