@@ -7,6 +7,6 @@ public class MessageRoomResponse {
     private final long roomId;
     private final String opponentId;
     private final long postId;
+    private final String lastMessage;
     private long notReadCount;
-    private String lastMessage;
 }

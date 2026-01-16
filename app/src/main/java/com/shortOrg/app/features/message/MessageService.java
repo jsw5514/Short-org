@@ -31,7 +31,8 @@ public class MessageService {
             MessageRoomResponse roomResponse = new MessageRoomResponse(
                     room.getId(),
                     room.getUser1().getId().equals(userId) ? room.getUser2().getId() : room.getUser1().getId(),
-                    room.getPost().getId()
+                    room.getPost().getId(),
+                    room.getLastMessage().getContent()
             );
             roomResponse.setNotReadCount(countNotRead(room.getId(), userId));
             messageRoomResponses.add(roomResponse);
