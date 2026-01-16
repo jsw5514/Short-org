@@ -15,11 +15,11 @@ public class Applicant {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="post_id")
-    private Post postId;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_id")
-    private User userId;
+    private User user;
 
     @Enumerated(EnumType.STRING)
     private ApplicantStatus state;

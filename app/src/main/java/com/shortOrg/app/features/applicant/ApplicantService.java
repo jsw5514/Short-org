@@ -36,16 +36,17 @@ public class ApplicantService {
         Applicant applicant = new Applicant();
 
         applicant.setId(null);
-        applicant.setUserId(user);
-        applicant.setPostId(post);
+        applicant.setUser(user);
+        applicant.setPost(post);
         applicant.setState(ApplicantStatus.PENDING);
 
         applicantRepository.save(applicant);
     }
 
-    public List<ApplicantDto> applicantShow(Post postId) {
+    public List<ApplicantDto> applicantShow(Long postId) {
         // entity -> dto
-        List<Applicant> aList = applicantRepository.findByPostId(postId);
+        Post post = postRepository.findById(postId).orElseThrow();
+        List<Applicant> aList = applicantRepository.findByPostId(post.getId());
         List<ApplicantDto> dtos = new ArrayList<>();
 
         for (Applicant applicant : aList) {
@@ -58,9 +59,9 @@ public class ApplicantService {
     private ApplicantDto convertToDto(Applicant applicant){
         ApplicantDto applicantDto = new ApplicantDto();
 
-        applicantDto.setPostId(applicantDto.getPostId());
-        applicantDto.setUserId(applicantDto.getUserId());
-        applicantDto.setState(applicantDto.getState());
+        applicantDto.setPostId(applicant.getPost().getId());
+        applicantDto.setUserId(applicant.getUser().getId());
+        applicantDto.setState(applicant.getState());
 
         return applicantDto;
     }
