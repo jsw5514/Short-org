@@ -39,7 +39,7 @@ public class ApplicantController {
 
     // 모임 신청 목록
     @GetMapping("/{postId}/applicant")
-    public ResponseEntity<?> applicantShow(@PathVariable Post postId) {
+    public ResponseEntity<?> applicantShow(@PathVariable Long postId) {
         try {
             List<ApplicantDto> applicantList =  applicantService.applicantShow(postId);
             return ResponseEntity.ok(applicantList);

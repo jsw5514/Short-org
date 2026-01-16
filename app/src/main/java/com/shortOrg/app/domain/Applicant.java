@@ -15,11 +15,11 @@ public class Applicant {
 
     @ManyToOne
     @JoinColumn(name="post_id")
-    private Post postId;
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User userId;
+    private User user;
 
     @Enumerated(EnumType.STRING)
     private ApplicantStatus state;
