@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.1.8
+  version: 1.1.9
 
 servers:
   - url: /api
@@ -575,7 +575,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApplicantDecisionRequest'
+              type: string
+              enum: [APPROVED, REJECTED]
+              example: APPROVED
       responses:
         "200":
           description: 처리 성공
@@ -951,6 +953,10 @@ components:
           type: integer
           description: 해당 사용자가 읽지 않은 메시지 갯수
           example: 14
+        lastMessageContent:
+          type: string
+          description: 가장 최근 메시지 내용
+          example: "알겠습니다!"
 
     Applicant:
       description: 모임 참가 신청 상태
@@ -969,16 +975,6 @@ components:
           enum: [APPROVED, REJECTED, PENDING]
           description: 신청 처리 상태(수락/거절/대기중)
       required: [postId, userId, state]
-
-    ApplicantDecisionRequest:
-      description: 모임 신청 처리 요청
-      type: object
-      required: [state]
-      properties:
-        state:
-          type: string
-          enum: [APPROVED, REJECTED]
-          example: APPROVED
 
     ReportCreateRequest:
       description: 신고 생성 요청
