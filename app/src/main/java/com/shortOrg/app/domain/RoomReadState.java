@@ -3,9 +3,11 @@ package com.shortOrg.app.domain;
 import com.shortOrg.app.domain.embeddedId.RoomReadStateId;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "room_read_state")
 public class RoomReadState {
     @EmbeddedId

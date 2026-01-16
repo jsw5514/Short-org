@@ -17,15 +17,15 @@ public class Message {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="post_id")
-    private Post postId;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="sender_id")
-    private User senderId;
+    private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="receiver_id")
-    private User receiverId;
+    private User receiver;
 
     private String content;
 }
