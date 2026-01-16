@@ -7,5 +7,5 @@ import lombok.Data;
 public class ApplicantDto {
     Long postId;
     String userId;
-    String state;
+    ApplicantStatus state;
 }
