@@ -15,10 +15,7 @@ public class MessageController {
 
     @GetMapping("/room")
     public ResponseEntity<?> getRoomList(Authentication auth) {
-        messageService.getRooms(auth.getName());
-        //TODO getRooms 결과를 리턴해야함(예외처리는 별도)
-        //채팅방 목록 확인
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        return ResponseEntity.ok(messageService.getRooms(auth.getName()));
     }
     
     @GetMapping("/room/{roomId}")

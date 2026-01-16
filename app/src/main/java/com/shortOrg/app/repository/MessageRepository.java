@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
+    long countByMessageRoom_Id(Long messageRoomId);
+
+    long countByMessageRoom_IdAndIdAfter(Long messageRoomId, Long idAfter);
 }

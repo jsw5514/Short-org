@@ -4,7 +4,9 @@ import lombok.Data;
 
 @Data
 public class MessageRoomResponse {
-    int roomId;
-    String opponentId;
-    int postId;
+    private final long roomId;
+    private final String opponentId;
+    private final long postId;
+    private long notReadCount;
+    private String lastMessage;
 }
