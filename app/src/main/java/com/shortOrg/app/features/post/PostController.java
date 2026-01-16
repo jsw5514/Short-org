@@ -68,4 +68,18 @@ public class PostController {
         }
     }
 
+    @GetMapping("/nearby")
+    public ResponseEntity<?> showNearby(
+            @RequestParam("latitude") Double latitude,
+            @RequestParam("longitude") Double longitude,
+            @RequestParam(value = "radiusMeters", required = false) Integer radiusMeters,
+            @RequestParam(value = "category", required = false) String category) {
+        try {
+            List<Post> posts = postService.showNearby(latitude, longitude, radiusMeters, category);
+
+            return ResponseEntity.ok(posts);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -71,4 +71,9 @@ public class PostService {
 
         postRepository.delete(post);
     }
+
+
+    public List<Post> showNearby(Double latitude, Double longitude, Integer radiusMeters, String category) {
+        return postRepository.findNearByPosts(longitude, latitude, radiusMeters, category);
+    }
 }
