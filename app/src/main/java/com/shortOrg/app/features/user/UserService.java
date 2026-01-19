@@ -19,8 +19,11 @@ public class UserService {
 
     public void userInsert(SignupRequest signupRequest) {
         User user = new User();
+
         user.setId(signupRequest.getId());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setGender(signupRequest.getGender()); // F or M
+        user.setBirthday(signupRequest.getBirthday());
         user.setAvgRate(null);
         user.setOrgTime(0L);
 
