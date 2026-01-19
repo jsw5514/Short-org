@@ -1,5 +1,7 @@
 package com.shortOrg.app.domain.embeddedId;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Embeddable
+@Access(AccessType.FIELD)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

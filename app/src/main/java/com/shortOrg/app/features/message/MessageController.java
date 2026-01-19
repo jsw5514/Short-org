@@ -25,7 +25,7 @@ public class MessageController {
         try {
             return ResponseEntity.ok(messageService.getRoomMessage(roomId, auth.getName()));
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalStateException e) {
             return ResponseEntity.internalServerError().body(
                     new ErrorResponse("INTERNAL_SERVER_ERROR","서버 내부 오류 발생. 관리자에게 문의하세요."));
         }

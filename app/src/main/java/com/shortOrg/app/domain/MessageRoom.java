@@ -37,9 +37,9 @@ public class MessageRoom {
     
 //-----------------최근 메시지 프리뷰 최적화용-------------------------------
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "last_message_id", nullable = false)
-    private Message lastMessage;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_message_id")
+    private Message lastMessage = null;
 
     public MessageRoom(User user1, User user2, Post post) {
         int compareResult = user1.getId().compareTo(user2.getId());

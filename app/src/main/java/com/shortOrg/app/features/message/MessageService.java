@@ -136,6 +136,7 @@ public class MessageService {
                 messageRoom = messageRoomRepository.saveAndFlush(new MessageRoom(sender, receiver, post));
             }
             catch (DataIntegrityViolationException e) { //생성시도가 동시에 일어나서 예외가 발생한 경우
+                entityManager.clear();
                 messageRoom = messageRoomRepository.findByPostIdAndUserIds(request.getPostId(), user1Id, user2Id) //DB에서 다시 한번 조회 시도
                         .orElseThrow(()->e); //조회 실패시(=동시 생성시도가 아닌 다른 문제의 경우) 기존 예외 다시 throw
             }
@@ -157,7 +158,31 @@ public class MessageService {
         //최근 메시지 갱신
         messageRoom.setLastMessage(savedMessage);
         messageRoomRepository.save(messageRoom);
-
+        
+        //유저 읽기 상태 갱신(자신이 방금 보낸 메시지까지 모두 읽었다고 표시)
+        Optional<RoomReadState> optionalReadState = roomReadStateRepository.findByMessageRoom_IdAndUser_Id(messageRoom.getId(), senderId);
+        RoomReadState readState = null;
+        if(optionalReadState.isPresent()) {
+            readState = optionalReadState.get();
+            if(readState.getLastReadMessage().getId() < savedMessage.getId()) //마지막으로 읽은 메시지가 현재 메시지보다 더 과거의 메시지일 경우에만 update
+                readState.setLastReadMessage(savedMessage);
+            roomReadStateRepository.save(readState);
+        }
+        else {
+            readState = new RoomReadState();
+            readState.setMessageRoom(messageRoom);
+            readState.setUser(entityManager.getReference(User.class,senderId));
+            readState.setLastReadMessage(savedMessage);
+            try {
+                roomReadStateRepository.save(readState);
+            } catch (DataIntegrityViolationException e) {
+                entityManager.clear();
+                readState = roomReadStateRepository.findByMessageRoom_IdAndUser_Id(messageRoom.getId(), senderId)
+                        .orElseThrow(()->e);
+                readState.setLastReadMessage(savedMessage);
+            }
+        }
+        
         //전송한 메시지 반환
         return new MessageResponse(
                 message.getId(),
