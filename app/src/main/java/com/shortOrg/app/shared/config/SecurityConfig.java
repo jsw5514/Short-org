@@ -2,6 +2,7 @@ package com.shortOrg.app.shared.config;
 import com.shortOrg.app.features.auth.beans.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,6 +35,10 @@ public class SecurityConfig {
                                 "/api/auth/login", //로그인
                                 "/api/users", //회원가입
                                 "/api/users/exists" //id 중복 확인
+                                ).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/posts/category/*", //게시글 목록 확인
+                                "/api/posts/id/*" //게시글 단건 조회
                                 ).permitAll()
                         .requestMatchers("/api/auth/refresh").hasRole("REFRESH")
                         .anyRequest().hasRole("ACCESS")
