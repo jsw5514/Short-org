@@ -2,6 +2,7 @@ package com.shortOrg.app.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.Optional;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(
         name = "message_room",
         uniqueConstraints = @UniqueConstraint(
@@ -38,7 +40,21 @@ public class MessageRoom {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "last_message_id", nullable = false)
     private Message lastMessage;
-    
+
+    public MessageRoom(User user1, User user2, Post post) {
+        int compareResult = user1.getId().compareTo(user2.getId());
+        if (compareResult < 0) {
+            this.user1 = user1;
+            this.user2 = user2;
+        } else if (compareResult > 0) {
+            this.user1 = user2;
+            this.user2 = user1;
+        } else 
+            throw new IllegalArgumentException("자기 자신과의 채팅방은 만들 수 없음");
+        
+        this.post = post;
+    }
+
     public Optional<User> getOpponent(String userId){
         if(user1.getId().equals(userId)) 
             return Optional.of(user1);

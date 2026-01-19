@@ -17,4 +17,11 @@ public interface MessageRoomRepository extends JpaRepository<MessageRoom,Long> {
             "and (r.user1.id=:userId " +
             "or r.user2.id=:userId)")
     Optional<MessageRoom> findByIdAndUserId(@Param("roomId") Long id, @Param("userId") String userId);
+    
+    @Query("select r " +
+            "from MessageRoom r " +
+            "where r.post.id=:postId " +
+            "and r.user1.id=:user1Id " +
+            "and r.user2.id=:user2Id")
+    Optional<MessageRoom> findByPostIdAndUserIds(@Param("postId") Long postId, @Param("user1Id") String user1Id, @Param("user2Id") String user2Id);
 }

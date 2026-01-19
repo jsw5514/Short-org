@@ -1,5 +1,6 @@
 package com.shortOrg.app.features.message;
 
+import com.shortOrg.app.shared.dto.EnsureRoomAndSendMessageRequest;
 import com.shortOrg.app.shared.dto.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,9 +44,12 @@ public class MessageController {
     }
     
     @PostMapping("")
-    public ResponseEntity<?> ensureRoomAndSendMessage(@RequestBody String content) {
-        //TODO 메시지 전송, 내부적으로 가장 최근 메시지 갱신
-        //TODO 채팅방 생성->채팅 전송의 과정을 거칠것
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);//TODO 구현필요
+    public ResponseEntity<?> ensureRoomAndSendMessage(@RequestBody EnsureRoomAndSendMessageRequest request, Authentication auth) {
+        try {
+            return ResponseEntity.ok(messageService.ensureRoomAndSendMessage(request, auth.getName()));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("자기 자신에게 메시지를 보낼 수 없음");
+        }
     }
 }

@@ -4,12 +4,14 @@ import com.shortOrg.app.domain.*;
 import com.shortOrg.app.repository.MessageRepository;
 import com.shortOrg.app.repository.MessageRoomRepository;
 import com.shortOrg.app.repository.RoomReadStateRepository;
+import com.shortOrg.app.shared.dto.EnsureRoomAndSendMessageRequest;
 import com.shortOrg.app.shared.dto.MessageResponse;
 import com.shortOrg.app.shared.dto.MessageRoomResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -100,6 +102,48 @@ public class MessageService {
             throw new IllegalArgumentException("해당 id의 채팅방이 존재하지 않거나 요청 유저가 해당 채팅방에 속해있지 않음");
 
         return sendMessage(optionalRoom.get(), content, senderId);
+    }
+
+    @Transactional
+    public MessageResponse ensureRoomAndSendMessage(EnsureRoomAndSendMessageRequest request, String senderId) {
+        //유저 순서 판별
+        String receiverId = request.getReceiverId();
+        int compareResult = senderId.compareTo(receiverId);
+        String user1Id = null;
+        String user2Id = null;
+        if(compareResult < 0) {
+            user1Id = senderId;
+            user2Id = receiverId;
+        }
+        else if(compareResult > 0) {
+            user1Id = receiverId;
+            user2Id = senderId;
+        }
+        else {
+            throw new IllegalArgumentException("자기자신에게 메시지를 보낼 수 없음");
+        }
+        
+        //채팅방 존재 확인
+        var optionalMessageRoom = messageRoomRepository.findByPostIdAndUserIds(request.getPostId(), user1Id, user2Id);
+        
+        MessageRoom messageRoom = null;
+        if (optionalMessageRoom.isEmpty()) { //없으면 생성
+            User sender = entityManager.getReference(User.class, senderId);
+            User receiver = entityManager.getReference(User.class, request.getReceiverId());
+            Post post = entityManager.getReference(Post.class, request.getPostId());
+            
+            try {
+                messageRoom = messageRoomRepository.saveAndFlush(new MessageRoom(sender, receiver, post));
+            }
+            catch (DataIntegrityViolationException e) { //생성시도가 동시에 일어나서 예외가 발생한 경우
+                messageRoom = messageRoomRepository.findByPostIdAndUserIds(request.getPostId(), user1Id, user2Id) //DB에서 다시 한번 조회 시도
+                        .orElseThrow(()->e); //조회 실패시(=동시 생성시도가 아닌 다른 문제의 경우) 기존 예외 다시 throw
+            }
+        }
+        else { //있으면 그냥 사용
+            messageRoom = optionalMessageRoom.get();
+        }
+        return sendMessage(messageRoom, request.getContent(), senderId);
     }
 
     //메시지 전송
