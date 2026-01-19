@@ -8,8 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequestMapping("/api/message")
 @RequiredArgsConstructor
@@ -33,14 +31,21 @@ public class MessageController {
     }
     
     @PostMapping("/room/{roomId}")
-    public ResponseEntity<?> sendRoomMessage(@PathVariable String roomId, @RequestBody String message) {
-        //TODO 메시지 전송, 내부적으로 가장 최근 메시지 갱신
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);//TODO 구현필요
+    public ResponseEntity<?> sendRoomMessage(@PathVariable Long roomId, @RequestBody String content, Authentication auth) {
+        try {
+            return ResponseEntity.ok(messageService.sendRoomMessage(roomId, content, auth.getName()));
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(
+                    new ErrorResponse("BAD_REQUEST","잘못된 파라미터 값입니다.")
+            );
+        }
     }
     
     @PostMapping("")
-    public ResponseEntity<?> sendMessage(@RequestBody String message) {
+    public ResponseEntity<?> ensureRoomAndSendMessage(@RequestBody String content) {
         //TODO 메시지 전송, 내부적으로 가장 최근 메시지 갱신
+        //TODO 채팅방 생성->채팅 전송의 과정을 거칠것
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);//TODO 구현필요
     }
 }

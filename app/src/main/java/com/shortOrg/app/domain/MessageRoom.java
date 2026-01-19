@@ -2,8 +2,10 @@ package com.shortOrg.app.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -32,7 +34,16 @@ public class MessageRoom {
     private Post post;
     
 //-----------------최근 메시지 프리뷰 최적화용-------------------------------
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "last_message_id", nullable = false)
     private Message lastMessage;
+    
+    public Optional<User> getOpponent(String userId){
+        if(user1.getId().equals(userId)) 
+            return Optional.of(user1);
+        else if (user2.getId().equals(userId))
+            return  Optional.of(user2);
+        return Optional.empty();
+    }
 }

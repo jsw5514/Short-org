@@ -1,9 +1,6 @@
 package com.shortOrg.app.features.message;
 
-import com.shortOrg.app.domain.Message;
-import com.shortOrg.app.domain.MessageRoom;
-import com.shortOrg.app.domain.RoomReadState;
-import com.shortOrg.app.domain.User;
+import com.shortOrg.app.domain.*;
 import com.shortOrg.app.repository.MessageRepository;
 import com.shortOrg.app.repository.MessageRoomRepository;
 import com.shortOrg.app.repository.RoomReadStateRepository;
@@ -46,6 +43,18 @@ public class MessageService {
         }
         return messageRoomResponses;
     }
+    
+    //TODO 리포지토리 메소드가 JPQL을 이용하면 쿼리 횟수 2->1로 최적화할 여지 있음
+    //유저가 채팅방에서 읽지 않은 채팅 갯수를 반환
+    private long countNotRead(long roomId, String userId) {
+        Optional<RoomReadState> readState = roomReadStateRepository.findByMessageRoom_IdAndUser_Id(roomId, userId); //해당 유저가 읽은 적이 있는지 확인
+        if(readState.isPresent()) { //읽은 적이 있다면
+            return messageRepository.countByMessageRoom_IdAndIdAfter(roomId, readState.get().getLastReadMessage().getId()); //마지막으로 읽은 메시지 이후 것만 세서 반환
+        }
+        else { //읽은 적이 없다면
+            return messageRepository.countByMessageRoom_Id(roomId); //채팅방의 전체 메시지를 세서 반환
+        }
+    }
 
     @Transactional
     public List<MessageResponse> getRoomMessage(Long roomId, String userId) {
@@ -83,17 +92,35 @@ public class MessageService {
         )).toList();
     }
 
+    @Transactional
+    public MessageResponse sendRoomMessage(Long roomId, String content, String senderId) {
+        //채팅방 존재 확인+채팅방 내에 요청 유저가 있는지 확인
+        Optional<MessageRoom> optionalRoom = messageRoomRepository.findByIdAndUserId(roomId, senderId);
+        if(optionalRoom.isEmpty()) 
+            throw new IllegalArgumentException("해당 id의 채팅방이 존재하지 않거나 요청 유저가 해당 채팅방에 속해있지 않음");
 
-//private 메소드--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //TODO 리포지토리 메소드가 JPQL을 이용하면 쿼리 횟수 2->1로 최적화할 여지 있음
-    //유저가 채팅방에서 읽지 않은 채팅 갯수를 반환
-    private long countNotRead(long roomId, String userId) {
-        Optional<RoomReadState> readState = roomReadStateRepository.findByMessageRoom_IdAndUser_Id(roomId, userId); //해당 유저가 읽은 적이 있는지 확인
-        if(readState.isPresent()) { //읽은 적이 있다면
-            return messageRepository.countByMessageRoom_IdAndIdAfter(roomId, readState.get().getLastReadMessage().getId()); //마지막으로 읽은 메시지 이후 것만 세서 반환
-        }
-        else { //읽은 적이 없다면
-            return messageRepository.countByMessageRoom_Id(roomId); //채팅방의 전체 메시지를 세서 반환
-        }
+        return sendMessage(optionalRoom.get(), content, senderId);
+    }
+
+    //메시지 전송
+    private MessageResponse sendMessage(MessageRoom messageRoom, String content, String senderId) {
+        //메시지 전송
+        User sender = entityManager.getReference(User.class, senderId);
+        User receiver = messageRoom.getOpponent(senderId).orElseThrow(()->new IllegalStateException("채팅 상대를 찾을 수 없음"));
+        Message message = new Message(messageRoom, messageRoom.getPost(), sender, receiver, content);
+        Message savedMessage = messageRepository.saveAndFlush(message);
+
+        //최근 메시지 갱신
+        messageRoom.setLastMessage(savedMessage);
+        messageRoomRepository.save(messageRoom);
+
+        //전송한 메시지 반환
+        return new MessageResponse(
+                message.getId(),
+                message.getMessageRoom().getId(),
+                message.getPost().getId(),
+                message.getSender().getId(),
+                message.getContent()
+        );
     }
 }

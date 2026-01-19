@@ -1,10 +1,13 @@
 package com.shortOrg.app.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "message")
 public class Message {
     @Id
@@ -28,4 +31,12 @@ public class Message {
     private User receiver;
 
     private String content;
+
+    public Message(MessageRoom messageRoom, Post post, User sender, User receiver, String content) {
+        this.messageRoom = messageRoom;
+        this.post = post;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.content = content;
+    }
 }
