@@ -16,7 +16,7 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="reporter_id")
-    private Post reporterId;
+    private User reporterId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="target_id")
@@ -24,7 +24,7 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="post_id")
-    private User postId;
+    private Post postId;
 
     private String description;
 
