@@ -27,11 +27,11 @@ public class ApplicantService {
 
     // 모임 신청
     public void applicantRequest(Long postId, String userId) {
-        Post post = postRepository.findById(postId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
+        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("게시글 불러오기 실패"));
+        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("사용자 불러오기 실패"));
 
-//        if(applicantRepository.existsByPostIdAndUserId(post, user))
-//            throw new RuntimeException("이미 신청 완료한 게시글");
+        if(applicantRepository.existsByPostAndUser(post, user))
+            throw new RuntimeException("이미 신청 완료한 게시글");
 
         Applicant applicant = new Applicant();
 
@@ -64,5 +64,15 @@ public class ApplicantService {
         applicantDto.setState(applicant.getState());
 
         return applicantDto;
+    }
+
+    @Transactional
+    public void updateStatus(Long postId, String userId, ApplicantStatus state) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저 정보 불러오기 실패"));
+        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("게시글 불러오기 실패"));
+
+        Applicant applicant = applicantRepository.findByPostAndUser(post, user);
+
+        applicant.setState(state);
     }
 }

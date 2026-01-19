@@ -12,8 +12,10 @@ import java.util.List;
 
 @Repository
 public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
-    boolean existsByPostIdAndUserId(Post postId, User userId);
+    boolean existsByPostAndUser(Post post, User user);
 
     @Query("select a from Applicant a where a.post.id = :post")
     List<Applicant> findByPostId(@Param("post") Long postId);
+
+    Applicant findByPostAndUser(Post post, User user);
 }

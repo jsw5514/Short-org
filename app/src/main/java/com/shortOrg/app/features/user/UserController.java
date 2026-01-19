@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    // 회원가입
     @PostMapping("/users")
     public ResponseEntity<?> userInsert(@RequestBody SignupRequest signupRequest) {
         try {
@@ -23,11 +24,13 @@ public class UserController {
         }
     }
 
+    // 아이디 중복체크
     @GetMapping("/users/exists")
     public boolean idCheck(@RequestParam(value = "loginId") String id){
-        return !userService.idCheck(id);
+        return !userService.idCheck(id); // true면 사용가능, false면 사용불가
     }
 
+    // 프로필 조회
     @GetMapping("/users/{userId}/profile")
     public ResponseEntity<?> getProfile(@PathVariable("userId") String id){
         try {

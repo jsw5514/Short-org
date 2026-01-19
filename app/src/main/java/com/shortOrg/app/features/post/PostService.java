@@ -50,6 +50,7 @@ public class PostService {
         return post;
     }
 
+    // 게시글 수정
     public void updatePost(Long id, PostCreateRequest postCreate) {
         // 기존 게시글 조회
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없음"));

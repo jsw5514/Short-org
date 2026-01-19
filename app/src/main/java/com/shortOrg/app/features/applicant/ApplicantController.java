@@ -1,12 +1,8 @@
 package com.shortOrg.app.features.applicant;
 
-import com.shortOrg.app.domain.Applicant;
-import com.shortOrg.app.domain.Post;
-import com.shortOrg.app.domain.User;
 import com.shortOrg.app.shared.dto.ApplicantDto;
-import lombok.Getter;
+import com.shortOrg.app.shared.dto.ApplicantStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +18,6 @@ public class ApplicantController {
     // 모임 신청
     @PostMapping("/{postId}/applicants")
     public ResponseEntity<?> applicantRequest(@PathVariable Long postId, Authentication auth) {
-
-        if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-        }
-
         try {
             String userId = auth.getName();
 
@@ -38,13 +29,20 @@ public class ApplicantController {
     }
 
     // 모임 신청 목록
-    @GetMapping("/{postId}/applicant")
+    @GetMapping("/{postId}/applicants")
     public ResponseEntity<?> applicantShow(@PathVariable Long postId) {
         try {
             List<ApplicantDto> applicantList =  applicantService.applicantShow(postId);
             return ResponseEntity.ok(applicantList);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("신청 목록 불러오기 실패");
         }
+    }
+
+    // 모임 신청 처리
+    @PatchMapping("/{postId}/applicants/{userId}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long postId, @PathVariable String userId, @RequestBody ApplicantStatus state) {
+        applicantService.updateStatus(postId, userId, state);
+        return ResponseEntity.ok("변경 성공");
     }
 }
