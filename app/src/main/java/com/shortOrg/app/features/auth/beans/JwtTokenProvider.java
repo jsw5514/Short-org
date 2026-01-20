@@ -1,5 +1,6 @@
 package com.shortOrg.app.features.auth.beans;
 
+import com.shortOrg.app.features.auth.dto.JwtResult;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -19,18 +20,28 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    String createToken(String subject, Map<String, Object> claims, long ttlMs) {
+    JwtResult createToken(String subject, Map<String, Object> claims, long ttlMs) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + ttlMs);
-
-        return Jwts.builder()
+        
+        Claims finalClaims = Jwts.claims()
                 .subject(subject)
-                .claims(claims)
+                .add(claims)
                 .id(UUID.randomUUID().toString())
                 .issuedAt(now)
                 .expiration(exp)
+                .build();
+
+        String token = Jwts.builder()
+                .claims(finalClaims)
                 .signWith(key)
                 .compact();
+        
+        return new JwtResult(
+                token,
+                null,
+                finalClaims
+        );
     }
 
     public Jws<Claims> parse(String token) {

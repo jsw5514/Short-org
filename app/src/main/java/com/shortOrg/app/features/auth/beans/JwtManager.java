@@ -1,7 +1,6 @@
 package com.shortOrg.app.features.auth.beans;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
+import com.shortOrg.app.features.auth.dto.JwtResult;
 
 import java.util.Map;
 
@@ -16,11 +15,11 @@ public class JwtManager {
         this.refreshTtlMs = refreshTtlMs;
     }
 
-    public String createAccessToken(String username) {
+    public JwtResult createAccessToken(String username) {
         return jwtTokenProvider.createToken(username, Map.of("typ", "access"), accessTtlMs);
     }
 
-    public String createRefreshToken(String username) {
+    public JwtResult createRefreshToken(String username) {
         return jwtTokenProvider.createToken(username, Map.of("typ", "refresh"), refreshTtlMs);
     }
 
