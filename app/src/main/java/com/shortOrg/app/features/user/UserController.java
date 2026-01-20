@@ -16,12 +16,8 @@ public class UserController {
     // 회원가입
     @PostMapping("/users")
     public ResponseEntity<?> userInsert(@RequestBody SignupRequest signupRequest) {
-        try {
-            userService.userInsert(signupRequest);
-            return ResponseEntity.ok("성공");
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("실패");
-        }
+        userService.userInsert(signupRequest);
+        return ResponseEntity.ok("성공");
     }
 
     // 아이디 중복체크
@@ -33,19 +29,13 @@ public class UserController {
     // 프로필 조회
     @GetMapping("/users/{userId}/profile")
     public ResponseEntity<?> getProfile(@PathVariable("userId") String id){
-        try {
-            User user = userService.userProfile(id);
+        User user = userService.userProfile(id);
 
-            if(user != null){
-                return ResponseEntity.ok(user);
-            } else {
-                // not found
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않음");
-            }
-
-        } catch (Exception e){
-            // 서버 내부 오류 발생
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("실패");
+        if(user != null){
+            return ResponseEntity.ok(user);
+        } else {
+            // not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않음");
         }
     }
 }
