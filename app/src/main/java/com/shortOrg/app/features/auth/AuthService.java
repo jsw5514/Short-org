@@ -11,8 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,13 +36,33 @@ public class AuthService {
         tokenRepository.save(
                 new Token(
                         auth.getName(), 
-                        tokenEncoder.encode(refresh.token()), 
-                        refresh.claims().getIssuedAt().toInstant(), 
-                        refresh.claims().getExpiration().toInstant()
+                        tokenEncoder.encode(refresh.token()),
+                        refresh.claims().getIssuedAt().toInstant()
                 )
         );
         
         //발급된 토큰 반환
+        return new TokenResponse(access.token(), refresh.token());
+    }
+
+    public boolean validateRefreshToken(String username, String token) {
+        Optional<Token> dbToken = tokenRepository.findById(username);
+        return dbToken
+                .filter(tokenEntity -> tokenEncoder.matches(token, tokenEntity.getTokenHash()))
+                .isPresent();
+    }
+
+    public TokenResponse refresh(String userId) {
+        //토큰 발급
+        JwtResult access = jwt.createAccessToken(userId);
+        JwtResult refresh = jwt.createRefreshToken(userId);
+
+        Token dbtoken = tokenRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("리프레시 토큰 정보가 존재하지 않음"));
+        dbtoken.setTokenHash(tokenEncoder.encode(refresh.token()));
+        dbtoken.setUpdatedAt(refresh.claims().getIssuedAt().toInstant());
+        tokenRepository.save(dbtoken);
+        
         return new TokenResponse(access.token(), refresh.token());
     }
 }

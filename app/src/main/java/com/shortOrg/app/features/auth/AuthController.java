@@ -5,6 +5,7 @@ import com.shortOrg.app.features.auth.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,8 +22,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refresh() {
-        TokenResponse tokens = authService.refresh(); //TODO 구현 필요
+    public ResponseEntity<TokenResponse> refresh(Authentication auth) {
+        TokenResponse tokens = authService.refresh(auth.getName());
         return ResponseEntity.ok(tokens);
     }
 }

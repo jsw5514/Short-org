@@ -1,5 +1,6 @@
 package com.shortOrg.app.features.auth.config;
 
+import com.shortOrg.app.features.auth.AuthService;
 import com.shortOrg.app.features.auth.beans.JwtAuthenticationFilter;
 import com.shortOrg.app.features.auth.beans.JwtManager;
 import com.shortOrg.app.features.auth.beans.JwtTokenProvider;
@@ -24,7 +25,7 @@ public class JWTConfig {
     }
 
     @Bean
-    JwtAuthenticationFilter jwtAuthenticationFilter(JwtManager jwt, UserDetailsService uds) {
-        return new JwtAuthenticationFilter(jwt, uds);
+    JwtAuthenticationFilter jwtAuthenticationFilter(JwtManager jwt, UserDetailsService uds, AuthService as) {
+        return new JwtAuthenticationFilter(jwt, uds, as);
     }
 }

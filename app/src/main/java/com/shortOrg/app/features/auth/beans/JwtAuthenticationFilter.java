@@ -1,5 +1,6 @@
 package com.shortOrg.app.features.auth.beans;
 
+import com.shortOrg.app.features.auth.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,8 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtManager jwt;
     private final UserDetailsService userDetailsService;
-
+    private final AuthService authService;
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -37,7 +39,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
                 switch (jwt.getTokenType(token)) {
-                    case "refresh"-> authorities.add(new SimpleGrantedAuthority("ROLE_REFRESH"));
+                    case "refresh"-> {
+                        if (authService.validateRefreshToken(username, token)) {
+                            authorities.add(new SimpleGrantedAuthority("ROLE_REFRESH"));
+                        }
+                    }
                     case "access"-> authorities.add(new SimpleGrantedAuthority("ROLE_ACCESS"));
                 }
                 
