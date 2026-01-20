@@ -23,7 +23,7 @@ public class UserService {
         user.setId(signupRequest.getId());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setGender(signupRequest.getGender()); // F or M
-        user.setBirthday(signupRequest.getBirthday());
+        user.setBirth(signupRequest.getBirth());
         user.setAvgRate(null);
         user.setOrgTime(0L);
 
