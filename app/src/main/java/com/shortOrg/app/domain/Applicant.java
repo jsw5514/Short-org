@@ -8,6 +8,13 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
+@Table(
+        name = "applicant",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uq_applicant_post_user",
+                columnNames = {"post_id", "user_id"}
+        )
+)
 public class Applicant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
