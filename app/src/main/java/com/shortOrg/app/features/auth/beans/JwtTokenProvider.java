@@ -10,34 +10,23 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 public class JwtTokenProvider {
-
     private final SecretKey key;
-    private final long accessTtlMs;
-    private final long refreshTtlMs;
 
-    public JwtTokenProvider(String secret, long accessTtlMs, long refreshTtlMs) {
-        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        this.accessTtlMs = accessTtlMs;
-        this.refreshTtlMs = refreshTtlMs;
+    public JwtTokenProvider(String secret) {
+        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    public String createAccessToken(String username) {
-        return createToken(username, Map.of("typ", "access"), accessTtlMs);
-    }
-
-    public String createRefreshToken(String username) {
-        return createToken(username, Map.of("typ", "refresh"), refreshTtlMs);
-    }
-
-    private String createToken(String subject, Map<String, Object> claims, long ttlMs) {
+    String createToken(String subject, Map<String, Object> claims, long ttlMs) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + ttlMs);
 
         return Jwts.builder()
                 .subject(subject)
                 .claims(claims)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(now)
                 .expiration(exp)
                 .signWith(key)
@@ -46,7 +35,7 @@ public class JwtTokenProvider {
 
     public Jws<Claims> parse(String token) {
         return Jwts.parser()
-                .verifyWith((javax.crypto.SecretKey) key)
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token);
     }
@@ -59,13 +48,4 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
-    public String getUsername(String token) {
-        return parse(token).getPayload().getSubject();
-    }
-    
-    public String getTokenType(String token) {
-        return (String) parse(token).getPayload().get("typ");
-    }
 }
-
