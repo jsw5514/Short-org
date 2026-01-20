@@ -9,5 +9,5 @@ public class SignupRequest {
     private String id;
     private String password;
     private Gender gender;
-    private LocalDate birthday;
+    private LocalDate birth;
 }
