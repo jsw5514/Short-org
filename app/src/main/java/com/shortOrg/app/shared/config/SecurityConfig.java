@@ -27,14 +27,15 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //세션 비활성화
                 .formLogin(f -> f.disable()) //기본 폼 로그인 비활성화
                 .logout(logout -> {
-                    logout.logoutUrl("/logout");
+                    logout.logoutUrl("/api/auth/logout");
                     
                 })
                 .authorizeHttpRequests(auth -> auth  //url별 허용/거부 정책 설정
                         .requestMatchers(
                                 "/api/auth/login", //로그인
                                 "/api/users", //회원가입
-                                "/api/users/exists" //id 중복 확인
+                                "/api/users/exists", //id 중복 확인
+                                "/error" //에러
                                 ).permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/posts/category/*", //게시글 목록 확인
