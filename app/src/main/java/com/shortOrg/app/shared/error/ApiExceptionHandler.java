@@ -1,4 +1,4 @@
-package com.shortOrg.app.shared.config;
+package com.shortOrg.app.shared.error;
 
 import com.shortOrg.app.shared.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
