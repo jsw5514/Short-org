@@ -10,4 +10,8 @@ public class SignupRequest {
     private String password;
     private Gender gender;
     private LocalDate birth;
+    private String nickname;
+    private String profileImage;
 }
+
+// 닉네임, 프로필사진, 생일, 성별
