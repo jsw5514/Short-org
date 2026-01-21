@@ -1,6 +1,7 @@
 package com.shortOrg.app.features.user;
 
 import com.shortOrg.app.domain.User;
+import com.shortOrg.app.shared.dto.ProfileRequest;
 import com.shortOrg.app.shared.dto.SignupRequest;
 import com.shortOrg.app.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -55,15 +56,15 @@ public class UserService {
     }
 
     // 프로필 조회
-    public SignupRequest userProfile(String id) {
-        SignupRequest userDto = new SignupRequest();
+    public ProfileRequest userProfile(String id) {
+        ProfileRequest userDto = new ProfileRequest();
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("프로필 가져오기 실패"));
 
-        userDto.setId(user.getId());
         userDto.setNickname(user.getNickname());
         userDto.setGender(user.getGender());
         userDto.setBirth(user.getBirth());
-        userDto.setProfileImage(user.getProfileImage());
+        userDto.setProfile(user.getProfileImage());
+        userDto.setUserId(id);
 
         return userDto;
     }
@@ -86,8 +87,16 @@ public class UserService {
         }
     }
 
-    public void updateProfile(String userId, Authentication auth) {
 
+    public void updateProfile(String userId, ProfileRequest profileRequest) {
+        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("불러오기 실패"));
 
+        user.setId(profileRequest.getUserId());
+        user.setNickname(profileRequest.getNickname());
+        user.setGender(profileRequest.getGender());
+        user.setProfileImage(profileRequest.getProfile());
+        user.setBirth(profileRequest.getBirth());
+
+        userRepository.save(user);
     }
 }
