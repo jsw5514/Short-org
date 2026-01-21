@@ -1,10 +1,7 @@
 package com.shortOrg.app.domain;
 
 import com.shortOrg.app.shared.dto.Gender;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +19,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private Gender gender;
-    private LocalDate birthday;
+
+    private LocalDate birth;
 
     @Column(name="avg_rate")
     private Double avgRate;
