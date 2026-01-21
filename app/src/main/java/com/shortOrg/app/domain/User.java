@@ -29,6 +29,13 @@ public class User {
 
     @Column(name="org_time")
     private Long orgTime;
+
+    private String nickname;
+
+    @Column(name="profile_image")
+    private String profileImage;
 }
+
+
 
 
