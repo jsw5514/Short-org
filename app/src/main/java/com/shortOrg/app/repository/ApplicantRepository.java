@@ -18,4 +18,6 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     List<Applicant> findByPostId(@Param("post") Long postId);
 
     Applicant findByPostAndUser(Post post, User user);
+
+    long deleteByPost_IdAndUser_Id(Long postId, String userId);
 }

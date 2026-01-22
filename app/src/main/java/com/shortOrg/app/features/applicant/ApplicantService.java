@@ -10,12 +10,14 @@ import com.shortOrg.app.shared.dto.ApplicantDto;
 import com.shortOrg.app.shared.dto.ApplicantStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,7 +33,7 @@ public class ApplicantService {
         User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("사용자 불러오기 실패"));
 
         if(applicantRepository.existsByPostAndUser(post, user))
-            throw new RuntimeException("이미 신청 완료한 게시글");
+            throw new IllegalArgumentException("이미 신청 완료한 게시글");
 
         Applicant applicant = new Applicant();
 
@@ -74,5 +76,14 @@ public class ApplicantService {
         Applicant applicant = applicantRepository.findByPostAndUser(post, user);
 
         applicant.setState(state);
+    }
+
+    public void cancelApply(Long postId, String userId) {
+        log.debug("모임 요청 취소: postId = {}, userId = {}", postId, userId);
+        long deletedCount = applicantRepository.deleteByPost_IdAndUser_Id(postId, userId);
+        if(deletedCount == 0) {
+            log.error("모임 신청 취소 실패: 요청을 찾을 수 없음");
+            throw new IllegalArgumentException("요청을 찾을수 없음");
+        }
     }
 }
