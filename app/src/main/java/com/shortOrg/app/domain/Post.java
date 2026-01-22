@@ -1,5 +1,7 @@
 package com.shortOrg.app.domain;
 
+import com.shortOrg.app.shared.dto.JoinMode;
+import com.shortOrg.app.shared.dto.PostStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,14 +26,17 @@ public class Post {
     private String content;
 
     @Column(name = "date_time")
-    private LocalDateTime mettingTime;
+    private LocalDateTime meetingTime;
 
     private Double longitude;
     private Double latitude;
-    private String state;
 
+    @Enumerated(EnumType.STRING)
+    private PostStatus state;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "join_mode")
-    private String joinMode;
+    private JoinMode joinMode;
 
     @Column(name = "last_modified")
     private LocalDateTime lastModified = LocalDateTime.now();

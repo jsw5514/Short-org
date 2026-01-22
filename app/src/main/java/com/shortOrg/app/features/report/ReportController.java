@@ -17,13 +17,9 @@ public class ReportController {
 
     @PostMapping("")
     public ResponseEntity<?> reportRequest(@RequestBody ReportCreateRequest reportRequest, Authentication auth) {
-        try {
-            String name = auth.getName();
-            reportService.reportRequest(reportRequest, name);
+        String name = auth.getName();
+        reportService.reportRequest(reportRequest, name);
 
-            return ResponseEntity.ok("");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok("");
     }
 }

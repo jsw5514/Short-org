@@ -18,26 +18,18 @@ public class ApplicantController {
     // 모임 신청
     @PostMapping("/{postId}/applicants")
     public ResponseEntity<?> applicantRequest(@PathVariable Long postId, Authentication auth) {
-        try {
-            String userId = auth.getName();
+        String userId = auth.getName();
+        applicantService.applicantRequest(postId, userId);
 
-            applicantService.applicantRequest(postId, userId);
-            return ResponseEntity.ok("신청하기 성공");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok("신청하기 성공");
     }
 
     // 모임 신청 목록
     @GetMapping("/{postId}/applicants")
     public ResponseEntity<?> applicantShow(@PathVariable Long postId) {
-        try {
-            List<ApplicantDto> applicantList =  applicantService.applicantShow(postId);
-            return ResponseEntity.ok(applicantList);
-        } catch (Exception e) {
-            throw new RuntimeException("신청 목록 불러오기 실패");
-        }
-    }
+        List<ApplicantDto> applicantList =  applicantService.applicantShow(postId);
+        return ResponseEntity.ok(applicantList);
+}
 
     // 모임 신청 처리
     @PatchMapping("/{postId}/applicants/{userId}")

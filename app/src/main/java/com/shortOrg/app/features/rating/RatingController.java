@@ -1,6 +1,5 @@
 package com.shortOrg.app.features.rating;
 
-import com.shortOrg.app.domain.Post;
 import com.shortOrg.app.shared.dto.RatingRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +14,10 @@ public class RatingController {
 
     @PostMapping("/{postId}/ratings")
     public ResponseEntity<?> ratingEvaluation(@PathVariable Long postId, @RequestBody RatingRequest ratingRequest, Authentication auth) {
-        try {
-            String name = auth.getName();
-            ratingService.ratringEvaluation(postId, ratingRequest, name);
+        String name = auth.getName();
+        ratingService.ratingEvaluation(postId, ratingRequest, name);
 
-            return ResponseEntity.ok("평가 성공");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok("평가 성공");
     }
 }
+
