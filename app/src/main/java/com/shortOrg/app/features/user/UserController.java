@@ -19,7 +19,7 @@ public class UserController {
     // 회원가입
     @PostMapping(value = "/users", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> userInsert(
-            @RequestPart("signupRequest") SignupRequest signupRequest,
+            @ModelAttribute SignupRequest signupRequest,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
             ) {
         userService.userInsert(signupRequest, profileImage);

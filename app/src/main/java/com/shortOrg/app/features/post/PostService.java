@@ -57,8 +57,7 @@ public class PostService {
         post.setContent(postCreate.getContent());
         post.setMeetingTime(postCreate.getMeetingTime());
         post.setLocationName(postCreate.getLocationName());
-        post.setLongitude(postCreate.getLongitude());
-        post.setLatitude(postCreate.getLatitude());
+        post.setLocationLngLat(postCreate.getLongitude(), postCreate.getLatitude());
         post.setCapacity(postCreate.getCapacity());
         post.setJoinMode(postCreate.getJoinMode());
         post.setState(PostStatus.OPEN);
@@ -86,8 +85,7 @@ public class PostService {
         post.setContent(postCreate.getContent());
         post.setMeetingTime(postCreate.getMeetingTime());
         post.setLocationName(postCreate.getLocationName());
-        post.setLongitude(postCreate.getLongitude());
-        post.setLatitude(postCreate.getLatitude());
+        post.setLocationLngLat(postCreate.getLongitude(), postCreate.getLatitude());
         post.setCapacity(postCreate.getCapacity());
         post.setJoinMode(post.getJoinMode());
 

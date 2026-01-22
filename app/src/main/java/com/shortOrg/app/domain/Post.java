@@ -5,46 +5,78 @@ import com.shortOrg.app.shared.dto.PostStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 
 import java.time.LocalDateTime;
 
-@Setter
+
 @Getter
 @Entity
 @Table(name = "post")
 public class Post {
+    private static final int SRID_WGS84 = 4326;
+    private static final GeometryFactory GF =
+            new GeometryFactory(new PrecisionModel(), SRID_WGS84);
+
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "writer_id")
     private User writerId;
 
+    @Setter
     private String category;
+    @Setter
     private String title;
+    @Setter
     private String content;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private PostStatus state; //모임 및 게시글 모집 상태
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "join_mode")
     private JoinMode joinMode;
 
+    @Setter
     @Column(name = "last_modified")
     private LocalDateTime lastModified = LocalDateTime.now();
 
+    @Setter
     @Column(name = "date_time")
     private LocalDateTime meetingTime;
 
     //모임용
+    @Setter
     @Column(name = "location_name")
     private String locationName;
     
-    private Double longitude;
-    private Double latitude;
-    
+    @JdbcTypeCode(SqlTypes.GEOMETRY)
+    @Column(name = "location", columnDefinition = "POINT SRID 4326", nullable = false)
+    private Point location;
+    public void setLocationLngLat(double longitude, double latitude) {
+        location = GF.createPoint(new Coordinate(longitude, latitude));
+        location.setSRID(SRID_WGS84);
+    }
+    public double getLongitude() {
+        return location.getCoordinate().getX();
+    }
+    public double getLatitude() {
+        return location.getCoordinate().getY();
+    }
+
+    @Setter
     private Integer capacity;
     //TODO 이와 동등한 인덱스나 뷰 추가 필요
 //    @Column(name = "capacity_joined")

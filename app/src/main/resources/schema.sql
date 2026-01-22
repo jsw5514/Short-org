@@ -1,0 +1,1 @@
+ALTER TABLE post ADD SPATIAL INDEX idx_location (location);

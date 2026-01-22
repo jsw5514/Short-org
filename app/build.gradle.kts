@@ -43,6 +43,10 @@ dependencies {
 	
 	//mysql driver
 	runtimeOnly("com.mysql:mysql-connector-j")
+
+	//mysql 공간 데이터 타입을 다루기 위한 추가 의존성
+	implementation("org.hibernate.orm:hibernate-spatial")
+	implementation("org.locationtech.jts:jts-core:1.20.0")
 }
 
 tasks.withType<Test> {
