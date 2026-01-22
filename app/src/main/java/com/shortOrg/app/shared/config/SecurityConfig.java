@@ -1,5 +1,6 @@
 package com.shortOrg.app.shared.config;
 import com.shortOrg.app.features.auth.beans.JwtAuthenticationFilter;
+import com.shortOrg.app.shared.error.ExceptionHandlingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,7 +19,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
-            JwtAuthenticationFilter jwtFilter
+            JwtAuthenticationFilter jwtFilter,
+            ExceptionHandlingFilter errFilter
     ) throws Exception {
 
         return http
@@ -45,6 +47,7 @@ public class SecurityConfig {
                         .anyRequest().hasRole("ACCESS")
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //jwt 인증을 처리하는 필터 추가
+                .addFilterBefore(errFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 

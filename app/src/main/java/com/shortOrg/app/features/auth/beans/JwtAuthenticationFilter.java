@@ -1,11 +1,15 @@
 package com.shortOrg.app.features.auth.beans;
 
 import com.shortOrg.app.features.auth.AuthService;
+import com.shortOrg.app.shared.dto.TokenState;
+import com.shortOrg.app.shared.dto.TokenValidationResult;
+import com.shortOrg.app.shared.error.TokenReusedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,8 +44,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
                 switch (jwt.getTokenType(token)) {
                     case "refresh"-> {
-                        if (authService.validateRefreshToken(username, token)) {
-                            authorities.add(new SimpleGrantedAuthority("ROLE_REFRESH"));
+                        TokenValidationResult validationResult = authService.validateRefreshToken(username, token);
+                        switch (validationResult.state()) {
+                            case VALID_ACTIVE->
+                                authorities.add(new SimpleGrantedAuthority("ROLE_REFRESH_ACTIVE"));
+                            case VALID_REPLAY -> 
+                                authorities.add(new SimpleGrantedAuthority("ROLE_REFRESH_REPLAY"));
+                            case INVALID_UNKNOWN -> {
+                                chain.doFilter(request, response);
+                                return;
+                            }
+                            case INVALID_REUSED -> 
+                                throw new TokenReusedException("token reuse detected");
                         }
                     }
                     case "access"-> authorities.add(new SimpleGrantedAuthority("ROLE_ACCESS"));
