@@ -1,13 +1,10 @@
 package com.shortOrg.app.features.post;
 
 import com.shortOrg.app.domain.Post;
-import com.shortOrg.app.domain.User;
+import com.shortOrg.app.features.post.mapper.PostMapper;
 import com.shortOrg.app.repository.PostRepository;
-import com.shortOrg.app.shared.dto.JoinMode;
 import com.shortOrg.app.shared.dto.PostCreateRequest;
 import com.shortOrg.app.shared.dto.PostDto;
-import com.shortOrg.app.shared.dto.PostStatus;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,28 +18,14 @@ import java.util.Optional;
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
-    private final EntityManager entityManager;
+    private final PostMapper postMapper;
 
     public List<PostDto> getPosts(String category) {
         List<Post> posts = postRepository.findByCategory(category);
         List<PostDto> postDtoList = new ArrayList<>();
 
         for (Post post: posts) {
-            PostDto dto = PostDto.builder()
-                    .id(post.getId())
-                    .category(post.getCategory())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .writerId(post.getWriterId())
-                    .meetingTime(post.getMeetingTime())
-                    .locationName(post.getLocationName())
-                    .longitude(post.getLongitude())
-                    .latitude(post.getLatitude())
-                    .capacity(post.getCapacity())
-                    .state(post.getState())
-                    .joinMode(post.getJoinMode())
-                    .lastModified(post.getLastModified())
-                    .build();
+            PostDto dto = postMapper.fromEntity(post);
             postDtoList.add(dto);
         }
 
@@ -50,18 +33,7 @@ public class PostService {
     }
 
     public void createPost(String userId, PostCreateRequest postCreate) {
-        Post post = new Post();
-        post.setId(null);
-        post.setCategory(postCreate.getCategory());
-        post.setTitle(postCreate.getTitle());
-        post.setContent(postCreate.getContent());
-        post.setMeetingTime(postCreate.getMeetingTime());
-        post.setLocationName(postCreate.getLocationName());
-        post.setLocationLngLat(postCreate.getLongitude(), postCreate.getLatitude());
-        post.setCapacity(postCreate.getCapacity());
-        post.setJoinMode(postCreate.getJoinMode());
-        post.setState(PostStatus.OPEN);
-        post.setWriterId(entityManager.getReference(User.class, userId));
+        Post post = postMapper.fromCreateRequest(userId, postCreate);
         postRepository.save(post);
     }
 

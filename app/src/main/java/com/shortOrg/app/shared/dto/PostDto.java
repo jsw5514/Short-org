@@ -17,7 +17,7 @@ public class PostDto {
     private String category;
     private String title;
     private String content;
-    private User writerId;
+    private User writer;
     private LocalDateTime meetingTime;
     private String locationName;
     private Double longitude;

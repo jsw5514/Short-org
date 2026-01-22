@@ -3,8 +3,7 @@ package com.shortOrg.app.domain;
 import com.shortOrg.app.shared.dto.JoinMode;
 import com.shortOrg.app.shared.dto.PostStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.locationtech.jts.geom.Coordinate;
@@ -17,6 +16,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "post")
 public class Post {
     private static final int SRID_WGS84 = 4326;
@@ -31,7 +31,7 @@ public class Post {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "writer_id")
-    private User writerId;
+    private User writer;
 
     @Setter
     private String category;
@@ -81,4 +81,32 @@ public class Post {
     //TODO 이와 동등한 인덱스나 뷰 추가 필요
 //    @Column(name = "capacity_joined")
 //    private Integer capacityJoined; 
+
+    @Builder
+    public Post(
+            User writer, 
+            String category, 
+            String title, 
+            String content, 
+            PostStatus state, 
+            JoinMode joinMode, 
+            LocalDateTime lastModified, 
+            LocalDateTime meetingTime, 
+            String locationName, 
+            double longitude,
+            double latitude,
+            Integer capacity
+    ) {
+        this.writer = writer;
+        this.category = category;
+        this.title = title;
+        this.content = content;
+        this.state = state;
+        this.joinMode = joinMode;
+        this.lastModified = lastModified;
+        this.meetingTime = meetingTime;
+        this.locationName = locationName;
+        this.capacity = capacity;
+        this.setLocationLngLat(longitude,latitude);
+    }
 }
