@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.1.13
+  version: 1.1.14
 
 servers:
   - url: /api
@@ -191,6 +191,18 @@ paths:
                   $ref: '#/components/schemas/Post'
 
   /posts:
+    get:
+      summary: 전체 게시글 리스트
+      description: 전체 게시글 리스트를 반환합니다.
+      operationId: getList
+      tags: [Post]
+      responses: 
+        "200":
+          description: 게시글 리스트 반환 성공
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Post'
     post:
       summary: 게시글 작성
       description: 새 게시글(모임)을 작성합니다.
@@ -837,6 +849,10 @@ components:
           format: date-time
           description: 모임 시간
           example: "2026-01-13T14:30:00"
+        locationName:
+          type: string
+          description: 모임장소명
+          example: "강남역 2번 출구"
         longitude:
           type: number
           description: 모임위치(경도)
@@ -845,10 +861,14 @@ components:
           type: number
           description: 모임위치(위도)
           example: 37.504296
+        capacity:
+          type: integer
+          description: 모임 최대 인원
+          example: 4
         state:
           type: string
-          description: 모임 상태(모집중, 시작됨, 종료됨)
-          enum: [OPEN, STARTED, ENDED]
+          description: 모임 상태(모집중, 시작됨, 종료됨, 만원, 취소됨)
+          enum: [OPEN, STARTED, ENDED, FULL, CANCELED]
         joinMode:
           type: string
           enum: [INSTANT, APPROVAL]
