@@ -5,7 +5,7 @@ import com.shortOrg.app.shared.enumerate.ApplicantStatus;
 import lombok.Data;
 
 @Data
-public class ApplicantDto {
+public class ApplicantResponse {
     Long postId;
     String userId;
     ApplicantStatus state;

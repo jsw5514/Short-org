@@ -6,7 +6,7 @@ import com.shortOrg.app.domain.User;
 import com.shortOrg.app.repository.ApplicantRepository;
 import com.shortOrg.app.repository.PostRepository;
 import com.shortOrg.app.repository.UserRepository;
-import com.shortOrg.app.features.applicant.dto.ApplicantDto;
+import com.shortOrg.app.features.applicant.dto.ApplicantResponse;
 import com.shortOrg.app.shared.enumerate.ApplicantStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -45,11 +45,11 @@ public class ApplicantService {
         applicantRepository.save(applicant);
     }
 
-    public List<ApplicantDto> applicantShow(Long postId) {
+    public List<ApplicantResponse> applicantShow(Long postId) {
         // entity -> dto
         Post post = postRepository.findById(postId).orElseThrow();
         List<Applicant> aList = applicantRepository.findByPostId(post.getId());
-        List<ApplicantDto> dtos = new ArrayList<>();
+        List<ApplicantResponse> dtos = new ArrayList<>();
 
         for (Applicant applicant : aList) {
             dtos.add(convertToDto(applicant));
@@ -58,14 +58,14 @@ public class ApplicantService {
         return dtos;
     }
 
-    private ApplicantDto convertToDto(Applicant applicant){
-        ApplicantDto applicantDto = new ApplicantDto();
+    private ApplicantResponse convertToDto(Applicant applicant){
+        ApplicantResponse applicantResponse = new ApplicantResponse();
 
-        applicantDto.setPostId(applicant.getPost().getId());
-        applicantDto.setUserId(applicant.getUser().getId());
-        applicantDto.setState(applicant.getState());
+        applicantResponse.setPostId(applicant.getPost().getId());
+        applicantResponse.setUserId(applicant.getUser().getId());
+        applicantResponse.setState(applicant.getState());
 
-        return applicantDto;
+        return applicantResponse;
     }
 
     @Transactional

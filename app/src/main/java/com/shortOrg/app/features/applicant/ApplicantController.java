@@ -1,6 +1,6 @@
 package com.shortOrg.app.features.applicant;
 
-import com.shortOrg.app.features.applicant.dto.ApplicantDto;
+import com.shortOrg.app.features.applicant.dto.ApplicantResponse;
 import com.shortOrg.app.shared.enumerate.ApplicantStatus;
 import com.shortOrg.app.shared.dto.ErrorResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class ApplicantController {
     // 모임 신청 목록
     @GetMapping("/{postId}/applicants")
     public ResponseEntity<?> applicantShow(@PathVariable Long postId) {
-        List<ApplicantDto> applicantList =  applicantService.applicantShow(postId);
+        List<ApplicantResponse> applicantList =  applicantService.applicantShow(postId);
         return ResponseEntity.ok(applicantList);
 }
 

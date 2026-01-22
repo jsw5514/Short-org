@@ -2,7 +2,7 @@ package com.shortOrg.app.features.post;
 
 import com.shortOrg.app.domain.Post;
 import com.shortOrg.app.features.post.dto.PostCreateRequest;
-import com.shortOrg.app.features.post.dto.PostDto;
+import com.shortOrg.app.features.post.dto.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,13 +15,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    
+    //전체 게시글 조회
+    @GetMapping("")
+    public ResponseEntity<List<PostResponse>> getAllPosts() {
+        return ResponseEntity.ok(postService.getAllPosts());
+    }
 
     // 카테고리별 조회
     @GetMapping("/category/{category}")
     public ResponseEntity<?> getPosts(@PathVariable("category") String category){
-        List<PostDto> postDto = postService.getPosts(category);
-        if(!postDto.isEmpty()) {
-            return ResponseEntity.ok(postDto);
+        List<PostResponse> postResponse = postService.getPosts(category);
+        if(!postResponse.isEmpty()) {
+            return ResponseEntity.ok(postResponse);
         } else return null; // else 부분은 나중에 수정
     }
 

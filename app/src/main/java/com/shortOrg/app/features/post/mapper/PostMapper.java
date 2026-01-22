@@ -3,7 +3,7 @@ package com.shortOrg.app.features.post.mapper;
 import com.shortOrg.app.domain.Post;
 import com.shortOrg.app.domain.User;
 import com.shortOrg.app.features.post.dto.PostCreateRequest;
-import com.shortOrg.app.features.post.dto.PostDto;
+import com.shortOrg.app.features.post.dto.PostResponse;
 import com.shortOrg.app.shared.enumerate.PostStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 public class PostMapper {
     private final EntityManager entityManager;
 
-    public PostDto fromEntity(Post post) {
-        return PostDto.builder()
+    public PostResponse fromEntity(Post post) {
+        return PostResponse.builder()
                 .id(post.getId())
                 .category(post.getCategory())
                 .title(post.getTitle())
