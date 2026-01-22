@@ -1,6 +1,6 @@
 package com.shortOrg.app.features.rating;
 
-import com.shortOrg.app.shared.dto.RatingRequest;
+import com.shortOrg.app.features.rating.dto.RatingRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

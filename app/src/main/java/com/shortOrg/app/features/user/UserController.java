@@ -1,7 +1,6 @@
 package com.shortOrg.app.features.user;
 
-import com.shortOrg.app.domain.User;
-import com.shortOrg.app.shared.dto.SignupRequest;
+import com.shortOrg.app.features.user.dto.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

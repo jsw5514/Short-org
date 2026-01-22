@@ -1,6 +1,8 @@
-package com.shortOrg.app.shared.dto;
+package com.shortOrg.app.features.post.dto;
 
 import com.shortOrg.app.domain.User;
+import com.shortOrg.app.shared.enumerate.JoinMode;
+import com.shortOrg.app.shared.enumerate.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

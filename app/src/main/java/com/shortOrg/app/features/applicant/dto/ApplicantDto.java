@@ -1,6 +1,7 @@
-package com.shortOrg.app.shared.dto;
+package com.shortOrg.app.features.applicant.dto;
 
 
+import com.shortOrg.app.shared.enumerate.ApplicantStatus;
 import lombok.Data;
 
 @Data

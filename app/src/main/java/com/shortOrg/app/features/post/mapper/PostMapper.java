@@ -2,9 +2,9 @@ package com.shortOrg.app.features.post.mapper;
 
 import com.shortOrg.app.domain.Post;
 import com.shortOrg.app.domain.User;
-import com.shortOrg.app.shared.dto.PostCreateRequest;
-import com.shortOrg.app.shared.dto.PostDto;
-import com.shortOrg.app.shared.dto.PostStatus;
+import com.shortOrg.app.features.post.dto.PostCreateRequest;
+import com.shortOrg.app.features.post.dto.PostDto;
+import com.shortOrg.app.shared.enumerate.PostStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

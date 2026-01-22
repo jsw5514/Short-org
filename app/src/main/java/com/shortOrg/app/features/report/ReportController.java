@@ -1,6 +1,6 @@
 package com.shortOrg.app.features.report;
 
-import com.shortOrg.app.shared.dto.ReportCreateRequest;
+import com.shortOrg.app.features.report.dto.ReportCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

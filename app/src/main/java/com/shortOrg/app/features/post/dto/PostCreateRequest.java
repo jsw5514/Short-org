@@ -1,5 +1,6 @@
-package com.shortOrg.app.shared.dto;
+package com.shortOrg.app.features.post.dto;
 
+import com.shortOrg.app.shared.enumerate.JoinMode;
 import lombok.Getter;
 import lombok.Setter;
 

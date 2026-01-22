@@ -6,7 +6,7 @@ import com.shortOrg.app.domain.User;
 import com.shortOrg.app.repository.PostRepository;
 import com.shortOrg.app.repository.ReportRepository;
 import com.shortOrg.app.repository.UserRepository;
-import com.shortOrg.app.shared.dto.ReportCreateRequest;
+import com.shortOrg.app.features.report.dto.ReportCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

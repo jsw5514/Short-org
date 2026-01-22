@@ -1,12 +1,11 @@
 package com.shortOrg.app.domain;
 
-import com.shortOrg.app.shared.dto.Gender;
+import com.shortOrg.app.shared.enumerate.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

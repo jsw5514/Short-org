@@ -1,4 +1,4 @@
-package com.shortOrg.app.shared.dto;
+package com.shortOrg.app.features.rating.dto;
 
 import lombok.Data;
 

@@ -1,5 +1,6 @@
-package com.shortOrg.app.shared.dto;
+package com.shortOrg.app.features.user.dto;
 
+import com.shortOrg.app.shared.enumerate.Gender;
 import lombok.Data;
 
 import java.time.LocalDate;

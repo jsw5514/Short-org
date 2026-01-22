@@ -1,10 +1,9 @@
 package com.shortOrg.app.features.post;
 
 import com.shortOrg.app.domain.Post;
-import com.shortOrg.app.shared.dto.PostCreateRequest;
-import com.shortOrg.app.shared.dto.PostDto;
+import com.shortOrg.app.features.post.dto.PostCreateRequest;
+import com.shortOrg.app.features.post.dto.PostDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;

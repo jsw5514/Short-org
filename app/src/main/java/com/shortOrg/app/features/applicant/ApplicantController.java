@@ -1,7 +1,7 @@
 package com.shortOrg.app.features.applicant;
 
-import com.shortOrg.app.shared.dto.ApplicantDto;
-import com.shortOrg.app.shared.dto.ApplicantStatus;
+import com.shortOrg.app.features.applicant.dto.ApplicantDto;
+import com.shortOrg.app.shared.enumerate.ApplicantStatus;
 import com.shortOrg.app.shared.dto.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

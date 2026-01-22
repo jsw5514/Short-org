@@ -1,7 +1,7 @@
 package com.shortOrg.app.features.user;
 
 import com.shortOrg.app.domain.User;
-import com.shortOrg.app.shared.dto.SignupRequest;
+import com.shortOrg.app.features.user.dto.SignupRequest;
 import com.shortOrg.app.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;

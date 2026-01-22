@@ -1,6 +1,6 @@
 package com.shortOrg.app.domain;
 
-import com.shortOrg.app.shared.dto.ApplicantStatus;
+import com.shortOrg.app.shared.enumerate.ApplicantStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

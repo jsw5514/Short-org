@@ -1,6 +1,6 @@
 package com.shortOrg.app.features.message;
 
-import com.shortOrg.app.shared.dto.EnsureRoomAndSendMessageRequest;
+import com.shortOrg.app.features.message.dto.EnsureRoomAndSendMessageRequest;
 import com.shortOrg.app.shared.dto.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

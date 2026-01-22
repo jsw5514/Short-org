@@ -6,7 +6,7 @@ import com.shortOrg.app.domain.User;
 import com.shortOrg.app.repository.PostRepository;
 import com.shortOrg.app.repository.RatingRepository;
 import com.shortOrg.app.repository.UserRepository;
-import com.shortOrg.app.shared.dto.RatingRequest;
+import com.shortOrg.app.features.rating.dto.RatingRequest;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

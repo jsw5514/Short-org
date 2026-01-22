@@ -1,7 +1,7 @@
 package com.shortOrg.app.domain;
 
-import com.shortOrg.app.shared.dto.JoinMode;
-import com.shortOrg.app.shared.dto.PostStatus;
+import com.shortOrg.app.shared.enumerate.JoinMode;
+import com.shortOrg.app.shared.enumerate.PostStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
