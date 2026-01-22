@@ -35,8 +35,10 @@ public class PostService {
                     .content(post.getContent())
                     .writerId(post.getWriterId())
                     .meetingTime(post.getMeetingTime())
+                    .locationName(post.getLocationName())
                     .longitude(post.getLongitude())
                     .latitude(post.getLatitude())
+                    .capacity(post.getCapacity())
                     .state(post.getState())
                     .joinMode(post.getJoinMode())
                     .lastModified(post.getLastModified())
@@ -54,8 +56,10 @@ public class PostService {
         post.setTitle(postCreate.getTitle());
         post.setContent(postCreate.getContent());
         post.setMeetingTime(postCreate.getMeetingTime());
+        post.setLocationName(postCreate.getLocationName());
         post.setLongitude(postCreate.getLongitude());
         post.setLatitude(postCreate.getLatitude());
+        post.setCapacity(postCreate.getCapacity());
         post.setJoinMode(postCreate.getJoinMode());
         post.setState(PostStatus.OPEN);
         post.setWriterId(entityManager.getReference(User.class, userId));
@@ -81,8 +85,10 @@ public class PostService {
         post.setTitle(postCreate.getTitle());
         post.setContent(postCreate.getContent());
         post.setMeetingTime(postCreate.getMeetingTime());
+        post.setLocationName(postCreate.getLocationName());
         post.setLongitude(postCreate.getLongitude());
         post.setLatitude(postCreate.getLatitude());
+        post.setCapacity(postCreate.getCapacity());
         post.setJoinMode(post.getJoinMode());
 
         post.setLastModified(null);

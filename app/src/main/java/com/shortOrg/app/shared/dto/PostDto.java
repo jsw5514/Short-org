@@ -19,8 +19,10 @@ public class PostDto {
     private String content;
     private User writerId;
     private LocalDateTime meetingTime;
+    private String locationName;
     private Double longitude;
     private Double latitude;
+    private Integer capacity;
     private PostStatus state;
     private JoinMode joinMode;
     private LocalDateTime lastModified;

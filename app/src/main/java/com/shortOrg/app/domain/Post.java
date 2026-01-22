@@ -25,14 +25,8 @@ public class Post {
     private String title;
     private String content;
 
-    @Column(name = "date_time")
-    private LocalDateTime meetingTime;
-
-    private Double longitude;
-    private Double latitude;
-
     @Enumerated(EnumType.STRING)
-    private PostStatus state;
+    private PostStatus state; //모임 및 게시글 모집 상태
 
     @Enumerated(EnumType.STRING)
     @Column(name = "join_mode")
@@ -40,4 +34,19 @@ public class Post {
 
     @Column(name = "last_modified")
     private LocalDateTime lastModified = LocalDateTime.now();
+
+    @Column(name = "date_time")
+    private LocalDateTime meetingTime;
+
+    //모임용
+    @Column(name = "location_name")
+    private String locationName;
+    
+    private Double longitude;
+    private Double latitude;
+    
+    private Integer capacity;
+    //TODO 이와 동등한 인덱스나 뷰 추가 필요
+//    @Column(name = "capacity_joined")
+//    private Integer capacityJoined; 
 }

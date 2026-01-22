@@ -8,11 +8,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class PostCreateRequest {
-    String category;
-    String title;
-    String content;
-    LocalDateTime meetingTime;
-    Double longitude;
-    Double latitude;
-    JoinMode joinMode;
+    private String category;
+    private String title;
+    private String content;
+    private LocalDateTime meetingTime;
+    private String locationName;
+    private Double longitude;
+    private Double latitude;
+    private Integer capacity;
+    private JoinMode joinMode;
 }
