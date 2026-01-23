@@ -17,7 +17,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     @Query("select a from Applicant a where a.post.id = :post")
     List<Applicant> findByPostId(@Param("post") Long postId);
 
-    Applicant findByPostAndUser(Post post, User user);
-
+    Applicant findByPostIdAndUserId(Long postId, String userId);
+    
     long deleteByPost_IdAndUser_Id(Long postId, String userId);
 }
