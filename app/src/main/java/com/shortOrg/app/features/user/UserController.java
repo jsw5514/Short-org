@@ -18,17 +18,11 @@ public class UserController {
     private final UserService userService;
 
     // 회원가입
-    @PostMapping(value = "/users", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> userInsert(
-            @RequestPart("signupRequest") SignupRequest signupRequest,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
-            ) {
-        userService.userInsert(signupRequest, profileImage);
+    @PostMapping("/users")
+    public ResponseEntity<?> userInsert(@RequestBody SignupRequest signupRequest) {
+        userService.userInsert(signupRequest);
         return ResponseEntity.ok("성공");
     }
-
-    // 프로필 이미지 업로드
-    @PostMapping("")
 
     // 아이디 중복체크
     @GetMapping("/users/exists")
@@ -48,6 +42,7 @@ public class UserController {
         }
     }
 
+    // 프로필 수정
     @PutMapping("users/update")
     public ResponseEntity<?> updateProfile(@RequestBody ProfileRequest profileRequest, Authentication auth) {
         String user = auth.getName();
@@ -56,3 +51,4 @@ public class UserController {
         return ResponseEntity.ok("수정 성공");
     }
 }
+

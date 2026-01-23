@@ -30,13 +30,7 @@ public class UserService {
 
     // 회원가입
     @Transactional
-    public void userInsert(SignupRequest signupRequest, MultipartFile profileImage) {
-        String savedFile = "";
-
-        if(profileImage != null && !profileImage.isEmpty()){
-            savedFile = saveProfileImage(profileImage);
-        }
-
+    public void userInsert(SignupRequest signupRequest) {
         User user = new User();
 
         user.setId(signupRequest.getId());
@@ -46,7 +40,6 @@ public class UserService {
         user.setNickname(signupRequest.getNickname());
         user.setAvgRate(null);
         user.setOrgTime(0L);
-        user.setProfileImage(savedFile);
         userRepository.save(user);
     }
 
