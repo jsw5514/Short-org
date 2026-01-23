@@ -37,10 +37,11 @@ public class SecurityConfig {
                                 "/api/auth/login", //로그인
                                 "/api/users", //회원가입
                                 "/api/users/exists", //id 중복 확인
-                                "/error" //에러
+                                "/error" //예외처리
                                 ).permitAll()
                         .requestMatchers("/api/auth/refresh").hasRole("REFRESH")
-                        .anyRequest().hasRole("ACCESS")
+                        .requestMatchers("/api/**").hasRole("ACCESS")
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //jwt 인증을 처리하는 필터 추가
                 .addFilterBefore(errFilter, JwtAuthenticationFilter.class)
