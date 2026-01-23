@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.1.15
+  version: 1.2.0
 
 servers:
   - url: /api
@@ -803,7 +803,15 @@ components:
         id:
           type: string
           description: 사용자 ID
-          example: testuser
+          example: 'testuser'
+        nickname:
+          type: string
+          description: 닉네임
+          example: '닉네임'
+        profileImageUrl:
+          type: string
+          description: 프로필 이미지 url
+          example: '/images/1111-1111-1111'
         birth:
           type: string
           format: date
@@ -844,6 +852,18 @@ components:
           type: string
           description: 게시글 내용
           example: '내용입니다'
+        writerId:
+          type: string
+          description: 작성자 id
+          example: 'user01'
+        writerNickname:
+          type: string
+          description: 작성자 닉네임
+          example: '닉네임'
+        writerImageUrl:
+          type: string
+          description: 작성자 프로필 이미지 url
+          example: '/images/1111-1111-1111'
         meetingTime:
           type: string
           format: date-time
@@ -861,6 +881,10 @@ components:
           type: number
           description: 모임위치(위도)
           example: 37.504296
+        currentCount:
+          type: integer
+          description: 현재 모임 참여인원(주최자 포함)
+          example: 2
         capacity:
           type: integer
           description: 모임 최대 인원
@@ -878,6 +902,10 @@ components:
           format: date-time
           description: 게시글의 최종 수정 시간
           example: "2026-01-13T14:30:00"
+        myParticipationStatus:
+          type: string
+          enum: [ HOST, MEMBER, PENDING, NONE ]
+          example: PENDING
       required:
         - id
         - category
@@ -983,6 +1011,10 @@ components:
           type: integer
           description: 쪽지가 속한 게시글 id
           example: 46
+        postTitle:
+          type: string
+          description: 쪽지가 속한 게시글 제목
+          example: '제목입니다'
         senderId:
           type: string
           example: testuser
@@ -1030,7 +1062,15 @@ components:
         opponentId:
           type: string
           description: 채팅 상대 id
-          example: otherUser
+          example: 'otherUser'
+        opponentNickname:
+          type: string
+          description: 채팅 상대 닉네임
+          example: '유저23'
+        opponentProfileImageUrl:
+          type: string
+          description: 채팅상대 프로필 사진 url
+          example: '/images/1111-1111-1111'
         postId:
           type: integer
           description: 게시글 id
