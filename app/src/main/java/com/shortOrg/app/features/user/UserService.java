@@ -8,10 +8,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,21 +32,26 @@ public class UserService {
     // 회원가입
     @Transactional
     public void userInsert(SignupRequest signupRequest) {
-        User user = new User();
+        if(idCheck(signupRequest.getId())){
+            User user = new User();
 
-        user.setId(signupRequest.getId());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user.setGender(signupRequest.getGender()); // F or M
-        user.setBirth(signupRequest.getBirth());
-        user.setNickname(signupRequest.getNickname());
-        user.setAvgRate(null);
-        user.setOrgTime(0L);
-        userRepository.save(user);
+            user.setId(signupRequest.getId());
+            user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+            user.setGender(signupRequest.getGender()); // F or M
+            user.setBirth(signupRequest.getBirth());
+            user.setNickname(signupRequest.getNickname());
+            user.setAvgRate(null);
+            user.setOrgTime(0L);
+
+            userRepository.save(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재하는 아이디입니다.");
+        }
     }
 
     // 아이디 중복 확인
     public boolean idCheck(String id) {
-        return userRepository.existsById(id);
+        return !userRepository.existsById(id);
     }
 
     // 프로필 조회
@@ -61,6 +67,7 @@ public class UserService {
 
         return userDto;
     }
+
 
     public String saveProfileImage(MultipartFile file) {
         File directory = new File(uploadPath);
@@ -80,13 +87,19 @@ public class UserService {
         }
     }
 
-    public void updateProfile(String userId, ProfileRequest profileRequest) {
+
+    // 프로필 업데이트
+    public void updateProfile(String userId, ProfileRequest profileRequest, MultipartFile image) {
         User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("불러오기 실패"));
 
-        user.setId(profileRequest.getUserId());
+        if(image != null && !image.isEmpty()) {
+            String imageUrl = saveProfileImage(image);
+            user.setProfileImage(imageUrl);
+        }
+
+        user.setId(userId);
         user.setNickname(profileRequest.getNickname());
         user.setGender(profileRequest.getGender());
-        user.setProfileImage(profileRequest.getProfile());
         user.setBirth(profileRequest.getBirth());
 
         userRepository.save(user);
