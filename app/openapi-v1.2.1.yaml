@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.2.0
+  version: 1.2.1
 
 servers:
   - url: /api
@@ -227,6 +227,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+                
+  /posts/hot:
+    get:
+      summary: hot 게시글 목록
+      description: 마감임박(남은 자리 2자리 이하) 모임 게시글 목록(거리순)
+      operationId: listPostsHot
+      tags: [Post]
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          description: 현재 위치 위도
+          schema:
+            type: number
+            example: 37.504296
+        - name: longitude
+          in: query
+          required: true
+          description: 현재 위치 경도
+          schema:
+            type: number
+            example: 127.004794
+        - name: radiusMeters
+          in: query
+          required: false
+          description: 반경(미터). 미지정 시 서버 기본값 사용
+          schema:
+            type: integer
+            example: 1000
+      responses:
+        200:
+          description: 게시글 목록 반환 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Post'
 
   /posts/id/{postId}:
     get:
