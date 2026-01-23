@@ -47,7 +47,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("users/{userId}/update")
+    @PutMapping("/users/{userId}/update")
     public ResponseEntity<?> updateProfile(@PathVariable String userId, Authentication auth) {
         String user = auth.getName();
         userService.updateProfile(userId, auth);
