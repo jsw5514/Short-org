@@ -25,9 +25,9 @@ public class ApiExceptionHandler {
     public ResponseEntity<?> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e) {
         return ResponseEntity.status(405).body(err("Not Supported Method Type", e.getMessage()));
     }
-    
-    @ExceptionHandler({ServletRequestBindingException.class, MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<?> handleServletRequestBindingException(Throwable e) {
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    public ResponseEntity<?> handleServletRequestBindingException(ServletRequestBindingException e) {
         return ResponseEntity.badRequest().body(err("Invalid Request Content", e.getMessage()));
     }
     
