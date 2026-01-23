@@ -39,10 +39,6 @@ public class SecurityConfig {
                                 "/api/users/exists", //id 중복 확인
                                 "/error" //에러
                                 ).permitAll()
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/posts/category/*", //게시글 목록 확인
-                                "/api/posts/id/*" //게시글 단건 조회
-                                ).permitAll()
                         .requestMatchers("/api/auth/refresh").hasRole("REFRESH")
                         .anyRequest().hasRole("ACCESS")
                 )
