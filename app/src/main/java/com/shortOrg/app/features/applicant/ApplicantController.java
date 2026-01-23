@@ -33,8 +33,9 @@ public class ApplicantController {
 
     // 모임 신청 처리
     @PatchMapping("/{postId}/applicants/{userId}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long postId, @PathVariable String userId, @RequestBody ApplicantStatus state) {
-        applicantService.updateStatus(postId, userId, state);
+    public ResponseEntity<?> updateStatus(@PathVariable Long postId, @PathVariable String userId, @RequestBody ApplicantStatus state, Authentication auth) {
+        String writerId = auth.getName();
+        applicantService.updateStatus(postId, userId, state, writerId);
         return ResponseEntity.ok("변경 성공");
     }
 }

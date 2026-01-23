@@ -33,6 +33,9 @@ public class ApplicantService {
         if(applicantRepository.existsByPostAndUser(post, user))
             throw new RuntimeException("이미 신청 완료한 게시글");
 
+        if(post.getWriterId().getId().equals(userId))
+            throw new RuntimeException("본인 글에는 신청 불가");
+
         Applicant applicant = new Applicant();
 
         applicant.setId(null);
@@ -66,13 +69,15 @@ public class ApplicantService {
         return applicantDto;
     }
 
+    // 요청 승인/거절
     @Transactional
-    public void updateStatus(Long postId, String userId, ApplicantStatus state) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저 정보 불러오기 실패"));
-        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("게시글 불러오기 실패"));
-
-        Applicant applicant = applicantRepository.findByPostAndUser(post, user);
+    public void updateStatus(Long postId, String userId, ApplicantStatus state, String writerId) {
+        Applicant applicant = applicantRepository.findByPostIdAndUserId(postId, userId);
+        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException(""));
+        if(!post.getWriterId().getId().equals(writerId))
+            throw new RuntimeException("글쓴이와 수락하는 사람이 일치하지 않음");
 
         applicant.setState(state);
+        applicantRepository.save(applicant);
     }
 }
