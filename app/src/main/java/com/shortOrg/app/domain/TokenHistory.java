@@ -1,6 +1,5 @@
 package com.shortOrg.app.domain;
 
-import com.shortOrg.app.shared.enumerate.EventType;
 import jakarta.persistence.*;
 import lombok.Getter;
 
