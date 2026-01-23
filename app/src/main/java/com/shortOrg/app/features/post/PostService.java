@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,14 +23,10 @@ public class PostService {
 
     public List<PostResponse> getPosts(String category) {
         List<Post> posts = postRepository.findByCategory(category);
-        List<PostResponse> postResponseList = new ArrayList<>();
 
-        for (Post post: posts) {
-            PostResponse dto = postMapper.fromEntity(post);
-            postResponseList.add(dto);
-        }
-
-        return postResponseList;
+        return posts.stream()
+                    .map(PostResponse::new)
+                    .collect(Collectors.toList());
     }
 
     public void createPost(String userId, PostCreateRequest postCreate) {
