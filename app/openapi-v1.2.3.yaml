@@ -4,7 +4,7 @@ info:
   description: |
     ShortOrg Backend 서비스의 API 명세서입니다.
     로그인, 게시판, 모임, 쪽지, 신고, 평점 등의 기능을 제공합니다.
-  version: 1.2.1
+  version: 1.2.3
 
 servers:
   - url: /api
@@ -166,6 +166,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  
+  /images/{filename}:
+    get:
+      summary: 프로필 사진 다운로드
+      tags: [User]
+      parameters:
+        - name: 파일명
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 이미지(바이트 스트림)
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: 이미지를 찾을 수 없음
 
   /posts/category/{category}:
     get:
@@ -824,6 +849,9 @@ components:
         gender:
           type: string
           enum: [남, 여]
+        nickname:
+          type: string
+          example: '닉네임'
 
     ExistsResponse:
       description: 아이디 존재 여부
@@ -846,17 +874,17 @@ components:
           type: string
           description: 닉네임
           example: '닉네임'
-        profileImageUrl:
+        profileImageName:
           type: string
-          description: 프로필 이미지 url
-          example: '/images/1111-1111-1111'
+          description: 프로필 이미지 이름
+          example: 'xxx.png'
         birth:
           type: string
           format: date
           example: "2026-01-13"
         gender:
           type: string
-          enum: [남, 여]
+          enum: [M, F]
         avgRate:
           type: number
           description: 평균 평점
@@ -898,10 +926,10 @@ components:
           type: string
           description: 작성자 닉네임
           example: '닉네임'
-        writerImageUrl:
+        writerImageName:
           type: string
-          description: 작성자 프로필 이미지 url
-          example: '/images/1111-1111-1111'
+          description: 작성자 프로필 이미지 이름
+          example: 'xxx.png'
         meetingTime:
           type: string
           format: date-time
@@ -942,7 +970,7 @@ components:
           example: "2026-01-13T14:30:00"
         myParticipationStatus:
           type: string
-          enum: [ HOST, MEMBER, PENDING, NONE ]
+          enum: [ HOST, MEMBER, PENDING, REJECTED, NONE ]
           example: PENDING
       required:
         - id
@@ -1105,10 +1133,10 @@ components:
           type: string
           description: 채팅 상대 닉네임
           example: '유저23'
-        opponentProfileImageUrl:
+        opponentProfileImageName:
           type: string
-          description: 채팅상대 프로필 사진 url
-          example: '/images/1111-1111-1111'
+          description: 채팅 상대 프로필 이미지 이름
+          example: 'xxx.png'
         postId:
           type: integer
           description: 게시글 id
@@ -1136,7 +1164,7 @@ components:
           example: 'testuser'
         state:
           type: string
-          enum: [APPROVED, REJECTED, PENDING]
+          enum: [HOST, MEMBER, REJECTED, PENDING, NONE]
           description: 신청 처리 상태(수락/거절/대기중)
       required: [postId, userId, state]
 
