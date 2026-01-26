@@ -74,7 +74,15 @@ public class ApplicantService {
     // 요청 승인/거절
     @Transactional
     public void updateStatus(Long postId, String userId, ApplicantStatus state, String writerId) {
-        Applicant applicant = applicantRepository.findByPostIdAndUserId(postId, userId);
+        //state 유효성 판단
+        switch (state) {
+            case MEMBER, REJECTED -> log.debug("유효한 모임 신청 처리");
+            default -> {
+                log.error("잘못된 모임 신청 처리입니다. 요청된 상태 변경: {}",ApplicantStatus.toString(state));
+                throw new IllegalArgumentException("잘못된 모임 신청처리입니다. 유효한 요청은 MEMBER, REJECTED 입니다.");
+            }
+        }
+        Applicant applicant = applicantRepository.findByPostIdAndUserId(postId, userId).orElseThrow(()->new IllegalArgumentException("처리할 요청을 찾지 못했습니다."));
         Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException(""));
         if(!post.getWriter().getId().equals(writerId))
             throw new RuntimeException("글쓴이와 수락하는 사람이 일치하지 않음");

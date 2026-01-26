@@ -42,8 +42,14 @@ public class ApplicantController {
     @PatchMapping("/{postId}/applicants/{userId}")
     public ResponseEntity<?> updateStatus(@PathVariable Long postId, @PathVariable String userId, @RequestBody ApplicantStatus state, Authentication auth) {
         String writerId = auth.getName();
-        applicantService.updateStatus(postId, userId, state, writerId);
-        return ResponseEntity.ok("변경 성공");
+        try {
+            applicantService.updateStatus(postId, userId, state, writerId);
+            return ResponseEntity.ok("변경 성공");
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("BAD_REQUEST", e.getMessage()));
+        }
     }
     
     @DeleteMapping("/{postId}/applicants")

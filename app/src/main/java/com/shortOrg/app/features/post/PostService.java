@@ -1,16 +1,21 @@
 package com.shortOrg.app.features.post;
 
+import com.shortOrg.app.domain.Applicant;
 import com.shortOrg.app.domain.Post;
+import com.shortOrg.app.domain.User;
 import com.shortOrg.app.features.post.dto.PostCreateRequest;
 import com.shortOrg.app.features.post.dto.PostResponse;
 import com.shortOrg.app.features.post.mapper.PostMapper;
 import com.shortOrg.app.repository.ApplicantRepository;
 import com.shortOrg.app.repository.PostRepository;
 import com.shortOrg.app.repository.projection.PostDistanceView;
+import com.shortOrg.app.shared.enumerate.ApplicantStatus;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,30 +24,43 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final ApplicantRepository applicantRepository;
+    private final EntityManager entityManager;
     
-    private PostResponse postToPostResponse(Post post) {
+    private PostResponse postToPostResponse(Post post, String userId) {
         Long currentCount = applicantRepository.countByPost_Id(post.getId());
-        return postMapper.fromEntity(post, currentCount);
+        Applicant myParticipationStatus = applicantRepository.findByPostIdAndUserId(post.getId(), userId).orElse(null);
+                
+        return postMapper.fromEntity(post, currentCount, ApplicantStatus.toString(myParticipationStatus==null?null:myParticipationStatus.getState()));
     }
 
+    //TODO N+1 쿼리 수정
     @Transactional(readOnly = true)
-    public List<PostResponse> getPosts(String category) {
+    public List<PostResponse> getPosts(String category, String userId) {
         List<Post> posts = postRepository.findByCategory(category);
-        return posts.stream()
-                .map(this::postToPostResponse)
-                .toList();
+        
+        List<PostResponse> resultList = new ArrayList<>();
+        for(Post post : posts) {
+            resultList.add(postToPostResponse(post, userId));
+        }
+        return resultList;
     }
 
     @Transactional
     public void createPost(String userId, PostCreateRequest postCreate) {
         Post post = postMapper.fromCreateRequest(userId, postCreate);
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+        Applicant applicant = Applicant.builder()
+                .post(savedPost)
+                .user(entityManager.getReference(User.class, userId))
+                .state(ApplicantStatus.HOST)
+                .build();
+        applicantRepository.save(applicant);
     }
 
     @Transactional(readOnly = true)
-    public PostResponse showPost(Long id) {
+    public PostResponse showPost(Long id, String userId) {
         Post post = postRepository.findById(id).orElseThrow(()->new IllegalArgumentException("잘못된 게시글 id"));
-        return postToPostResponse(post);
+        return postToPostResponse(post, userId);
     }
 
     @Transactional
@@ -70,16 +88,28 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    //TODO N+1 쿼리 수정
     @Transactional(readOnly = true)
-    public List<PostResponse> showNearby(Double latitude, Double longitude, Integer radiusMeters, String category) {
+    public List<PostResponse> showNearby(Double latitude, Double longitude, Integer radiusMeters, String category, String userId) {
         List<Post> posts = postRepository.findNearByPosts(longitude, latitude, radiusMeters, category);
-        return posts.stream().map(this::postToPostResponse).toList();
+
+        List<PostResponse> resultList = new ArrayList<>();
+        for(Post post : posts) {
+            resultList.add(postToPostResponse(post, userId));
+        }
+        return resultList;
     }
 
+    //TODO N+1 쿼리 수정
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts() {
+    public List<PostResponse> getAllPosts(String userId) {
         List<Post> posts = postRepository.findAll();
-        return posts.stream().map(this::postToPostResponse).toList();
+
+        List<PostResponse> resultList = new ArrayList<>();
+        for(Post post : posts) {
+            resultList.add(postToPostResponse(post, userId));
+        }
+        return resultList;
     }
 
     @Transactional(readOnly = true)

@@ -36,7 +36,7 @@ public class PostMapper {
                 .build();
     }
 
-    public PostResponse fromEntity(Post post, Long currentCount) {
+    public PostResponse fromEntity(Post post, Long currentCount, String myParticipationStatus) {
         UserSummary userSummary = postToUserSummary(post);
 
         return PostResponse.builder()
@@ -90,7 +90,7 @@ public class PostMapper {
                 .state(postDistanceView.getState())
                 .joinMode(postDistanceView.getJoinMode())
                 .lastModified(postDistanceView.getLastModified())
-                .currentCount(postDistanceView.getCapacity() - postDistanceView.getSlack())
+                .currentCount((long) (postDistanceView.getCapacity() - postDistanceView.getSlack()))
                 .build();
     }
 }

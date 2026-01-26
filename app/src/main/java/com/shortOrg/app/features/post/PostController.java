@@ -18,14 +18,14 @@ public class PostController {
     
     //전체 게시글 조회
     @GetMapping("")
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    public ResponseEntity<List<PostResponse>> getAllPosts(Authentication auth) {
+        return ResponseEntity.ok(postService.getAllPosts(auth.getName()));
     }
 
     // 카테고리별 조회
     @GetMapping("/category/{category}")
-    public ResponseEntity<?> getPosts(@PathVariable("category") String category){
-        List<PostResponse> postResponse = postService.getPosts(category);
+    public ResponseEntity<?> getPosts(@PathVariable("category") String category, Authentication auth){
+        List<PostResponse> postResponse = postService.getPosts(category, auth.getName());
         if(!postResponse.isEmpty()) {
             return ResponseEntity.ok(postResponse);
         } else return null; // else 부분은 나중에 수정
@@ -40,9 +40,9 @@ public class PostController {
 
     // 게시글 보기
     @GetMapping("/id/{postId}")
-    public ResponseEntity<?> showPost(@PathVariable("postId") Long id){
+    public ResponseEntity<?> showPost(@PathVariable("postId") Long id, Authentication auth){
         try {
-            PostResponse post = postService.showPost(id);
+            PostResponse post = postService.showPost(id, auth.getName());
             return ResponseEntity.ok(post);
         }
         catch (IllegalArgumentException e){
@@ -70,8 +70,9 @@ public class PostController {
         @RequestParam("latitude") Double latitude,
         @RequestParam("longitude") Double longitude,
         @RequestParam(value = "radiusMeters", required = false) Integer radiusMeters,
-        @RequestParam(value = "category", required = false) String category) {
-        List<PostResponse> posts = postService.showNearby(latitude, longitude, radiusMeters, category);
+        @RequestParam(value = "category", required = false) String category, 
+        Authentication auth) {
+        List<PostResponse> posts = postService.showNearby(latitude, longitude, radiusMeters, category, auth.getName());
 
         return ResponseEntity.ok(posts);
     }

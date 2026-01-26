@@ -2,12 +2,15 @@ package com.shortOrg.app.domain;
 
 import com.shortOrg.app.shared.enumerate.ApplicantStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
 @Table(
         name = "applicant",
         uniqueConstraints = @UniqueConstraint(
@@ -30,4 +33,11 @@ public class Applicant {
 
     @Enumerated(EnumType.STRING)
     private ApplicantStatus state;
+    
+    @Builder
+    public Applicant(Post post, User user, ApplicantStatus state) {
+        this.post = post;
+        this.user = user;
+        this.state = state;
+    }
 }

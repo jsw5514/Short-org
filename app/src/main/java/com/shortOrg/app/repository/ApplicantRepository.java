@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
@@ -17,7 +18,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     @Query("select a from Applicant a where a.post.id = :post")
     List<Applicant> findByPostId(@Param("post") Long postId);
 
-    Applicant findByPostIdAndUserId(Long postId, String userId);
+    Optional<Applicant> findByPostIdAndUserId(Long postId, String userId);
     
     long deleteByPost_IdAndUser_Id(Long postId, String userId);
 
