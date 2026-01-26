@@ -12,6 +12,8 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -84,9 +86,16 @@ public class Post {
 
     @Setter
     private Integer capacity;
+    
+    @OneToMany(mappedBy = "post",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<Applicant> applicants = new ArrayList<>();
+    
     //TODO 이와 동등한 인덱스나 뷰 추가 필요
 //    @Column(name = "capacity_joined")
-//    private Integer capacityJoined; 
+//    private Integer capacityJoined;
 
     @Builder
     public Post(
