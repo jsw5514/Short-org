@@ -8,5 +8,9 @@ public class MessageRoomResponse {
     private final String opponentId;
     private final long postId;
     private final String lastMessage;
+    private final String title;
     private long notReadCount;
+
+    private final String opponentNickname;
+    private final String opponentProfileImage;
 }

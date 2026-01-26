@@ -34,7 +34,7 @@ public class MessageRoom {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
-    
+
 //-----------------최근 메시지 프리뷰 최적화용-------------------------------
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

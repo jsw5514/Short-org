@@ -9,4 +9,5 @@ public class MessageResponse {
     private final long postId;
     private final String senderId;
     private final String content;
+    private final String title;
 }

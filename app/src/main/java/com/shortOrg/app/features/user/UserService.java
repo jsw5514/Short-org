@@ -69,6 +69,7 @@ public class UserService {
     }
 
 
+    // 이미지 저장
     public String saveProfileImage(MultipartFile file) {
         File directory = new File(uploadPath);
         if(!directory.exists()) directory.mkdirs();
@@ -97,7 +98,6 @@ public class UserService {
             user.setProfileImage(imageUrl);
         }
 
-        user.setId(userId);
         user.setNickname(profileRequest.getNickname());
         user.setGender(profileRequest.getGender());
         user.setBirth(profileRequest.getBirth());
