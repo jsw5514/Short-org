@@ -6,6 +6,7 @@ import com.shortOrg.app.features.post.dto.PostCreateRequest;
 import com.shortOrg.app.features.post.dto.PostResponse;
 import com.shortOrg.app.features.user.dto.UserSummary;
 import com.shortOrg.app.features.user.mapper.UserMapper;
+import com.shortOrg.app.repository.projection.PostDistanceView;
 import com.shortOrg.app.shared.enumerate.PostStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostMapper {
     private final EntityManager entityManager;
     private final UserMapper userMapper;
+    
+    public UserSummary postToUserSummary(Post post) {
+        return UserSummary.builder()
+                .id(post.getWriter().getId())
+                .nickname(post.getWriterNickname())
+                .profileImage(post.getWriterProfileImage())
+                .build();
+    }
+    
+    public UserSummary postDistanceToUserSummary(PostDistanceView postDistanceView) {
+        return UserSummary.builder()
+                .id(postDistanceView.getWriterId())
+                .nickname(postDistanceView.getWriterNickname())
+                .profileImage(postDistanceView.getWriterProfileImage())
+                .build();
+    }
 
-    public PostResponse fromEntity(Post post) {
-        UserSummary userSummary = userMapper.fromEntity(post.getWriter());
+    public PostResponse fromEntity(Post post, Long currentCount) {
+        UserSummary userSummary = postToUserSummary(post);
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -36,6 +53,7 @@ public class PostMapper {
                 .state(post.getState())
                 .joinMode(post.getJoinMode())
                 .lastModified(post.getLastModified())
+                .currentCount(currentCount)
                 .build();
     }
     
@@ -53,6 +71,26 @@ public class PostMapper {
                 .state(PostStatus.OPEN)
                 .writer(entityManager.getReference(User.class, userId))
                 .build();
-
+    }
+    
+    public PostResponse fromDistanceView(PostDistanceView postDistanceView) {
+        UserSummary userSummary = postDistanceToUserSummary(postDistanceView);
+        
+        return PostResponse.builder()
+                .id(postDistanceView.getId())
+                .category(postDistanceView.getCategory())
+                .title(postDistanceView.getTitle())
+                .content(postDistanceView.getContent())
+                .writer(userSummary)
+                .meetingTime(postDistanceView.getMeetingTime())
+                .locationName(postDistanceView.getLocationName())
+                .longitude(postDistanceView.getLongitude())
+                .latitude(postDistanceView.getLatitude())
+                .capacity(postDistanceView.getCapacity())
+                .state(postDistanceView.getState())
+                .joinMode(postDistanceView.getJoinMode())
+                .lastModified(postDistanceView.getLastModified())
+                .currentCount(postDistanceView.getCapacity() - postDistanceView.getSlack())
+                .build();
     }
 }

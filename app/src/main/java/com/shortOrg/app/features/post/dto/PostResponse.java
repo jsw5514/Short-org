@@ -22,6 +22,7 @@ public class PostResponse {
     private Double longitude;
     private Double latitude;
     private Integer capacity;
+    private Long currentCount;
     private PostStatus state;
     private JoinMode joinMode;
     private LocalDateTime lastModified;

@@ -1,8 +1,8 @@
 package com.shortOrg.app.features.post;
 
-import com.shortOrg.app.domain.Post;
 import com.shortOrg.app.features.post.dto.PostCreateRequest;
 import com.shortOrg.app.features.post.dto.PostResponse;
+import com.shortOrg.app.shared.dto.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -41,8 +41,13 @@ public class PostController {
     // 게시글 보기
     @GetMapping("/id/{postId}")
     public ResponseEntity<?> showPost(@PathVariable("postId") Long id){
-        Post post = postService.showPost(id);
-        return ResponseEntity.ok(post);
+        try {
+            PostResponse post = postService.showPost(id);
+            return ResponseEntity.ok(post);
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(new ErrorResponse("BAD_REQUEST", e.getMessage()));
+        }
     }
 
     // 게시글 수정
@@ -66,8 +71,18 @@ public class PostController {
         @RequestParam("longitude") Double longitude,
         @RequestParam(value = "radiusMeters", required = false) Integer radiusMeters,
         @RequestParam(value = "category", required = false) String category) {
-        List<Post> posts = postService.showNearby(latitude, longitude, radiusMeters, category);
+        List<PostResponse> posts = postService.showNearby(latitude, longitude, radiusMeters, category);
 
         return ResponseEntity.ok(posts);
+    }
+    
+    @GetMapping("/hot")
+    public ResponseEntity<?> showHotPosts(
+            @RequestParam("latitude") Double latitude,
+            @RequestParam("longitude") Double longitude,
+            @RequestParam(value = "radiusMeters", required = false) Integer radiusMeters
+    ) {
+        List<PostResponse> hotPosts = postService.getHotPosts(latitude, longitude, radiusMeters);
+        return ResponseEntity.ok(hotPosts);
     }
 }

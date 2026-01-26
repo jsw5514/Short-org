@@ -32,6 +32,12 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "writer_id")
     private User writer;
+    
+    @Column(name = "writer_nickname")
+    private String writerNickname;
+    
+    @Column(name = "writer_profile_image")
+    private String writerProfileImage;
 
     @Setter
     private String category;
@@ -98,6 +104,8 @@ public class Post {
             Integer capacity
     ) {
         this.writer = writer;
+        this.writerNickname = writer.getNickname();
+        this.writerProfileImage = writer.getProfileImage();
         this.category = category;
         this.title = title;
         this.content = content;
