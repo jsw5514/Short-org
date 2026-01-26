@@ -3,12 +3,14 @@ package com.shortOrg.app.shared.error;
 import com.shortOrg.app.shared.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -46,6 +48,18 @@ public class ApiExceptionHandler {
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         e.printStackTrace();
         return ResponseEntity.badRequest().body(err("Not Supported Message", e.getMessage()));
+    }
+    
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e) {
+        e.printStackTrace();
+        return ResponseEntity.status(403).body(err("Bad Credentials", e.getMessage()));
+    }
+    
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<?> handleResponseStatusException(ResponseStatusException e) {
+        e.printStackTrace();
+        return ResponseEntity.status(e.getStatusCode()).body(err(e.getReason(), e.getMessage()));
     }
     
     @ExceptionHandler(Exception.class)
