@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/api/users/exists", //id 중복 확인
                                 "/error", //예외처리
 
-                                "/images/**"
+                                "/api/images/**"
                                 ).permitAll()
                         .requestMatchers("/api/auth/refresh").hasRole("REFRESH")
                         .requestMatchers("/api/**").hasRole("ACCESS")
