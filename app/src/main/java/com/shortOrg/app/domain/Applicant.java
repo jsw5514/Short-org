@@ -32,6 +32,7 @@ public class Applicant {
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20) // 길이가 작대요
     private ApplicantStatus state;
     
     @Builder
