@@ -37,7 +37,9 @@ public class SecurityConfig {
                                 "/api/auth/login", //로그인
                                 "/api/users", //회원가입
                                 "/api/users/exists", //id 중복 확인
-                                "/error" //예외처리
+                                "/error", //예외처리
+
+                                "/images/**"
                                 ).permitAll()
                         .requestMatchers("/api/auth/refresh").hasRole("REFRESH")
                         .requestMatchers("/api/**").hasRole("ACCESS")
