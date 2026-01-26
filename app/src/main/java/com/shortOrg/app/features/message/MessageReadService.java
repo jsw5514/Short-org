@@ -75,6 +75,9 @@ public class MessageReadService {
         if(readState.isPresent()) {
             recentReadState = readState.get();
             messages = messageRepository.findByMessageRoom_IdAndIdIsGreaterThanOrderByIdDesc(roomId, recentReadState.getLastReadMessage().getId());
+            if(messages.isEmpty()) { //마지막에 확인한 메시지가 최신 메시지
+                return List.of(); //추가로 줄 메시지가 없으므로 빈 리스트 리턴
+            }
         }
         //없으면 채팅방 모든 메시지 리턴
         else {
