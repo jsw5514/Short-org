@@ -39,7 +39,8 @@ public class MessageReadService {
                     room.getId(),
                     room.getUser1().getId().equals(userId) ? room.getUser2().getId() : room.getUser1().getId(),
                     room.getPost().getId(),
-                    room.getLastMessage().getContent()
+                    room.getLastMessage().getContent(),
+                    room.getPost().getTitle()
             );
             roomResponse.setNotReadCount(countNotRead(room.getId(), userId));
             messageRoomResponses.add(roomResponse);
@@ -91,7 +92,8 @@ public class MessageReadService {
                 message.getMessageRoom().getId(),
                 message.getPost().getId(),
                 message.getSender().getId(),
-                message.getContent()
+                message.getContent(),
+                message.getPost().getTitle()
         )).toList();
     }
 }
