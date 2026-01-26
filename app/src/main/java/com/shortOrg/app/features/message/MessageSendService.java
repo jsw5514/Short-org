@@ -119,7 +119,8 @@ public class MessageSendService {
                 message.getMessageRoom().getId(),
                 message.getPost().getId(),
                 message.getSender().getId(),
-                message.getContent()
+                message.getContent(),
+                message.getPost().getTitle()
         );
     }
 }

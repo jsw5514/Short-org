@@ -35,19 +35,23 @@ public class MessageReadService {
         ArrayList<MessageRoomResponse> messageRoomResponses = new ArrayList<>();
         //채팅방목록 -> dto로 변환 -> 안 읽은 메시지 갯수 추가
         for(MessageRoom room : roomList) {
+            boolean opIsUser2 = room.getUser1().getId().equals(userId);
+
             MessageRoomResponse roomResponse = new MessageRoomResponse(
                     room.getId(),
-                    room.getUser1().getId().equals(userId) ? room.getUser2().getId() : room.getUser1().getId(),
+                    opIsUser2 ? room.getUser2().getId() : room.getUser1().getId(),
                     room.getPost().getId(),
                     room.getLastMessage().getContent(),
-                    room.getPost().getTitle()
+                    room.getPost().getTitle(),
+                    opIsUser2 ? room.getUser2().getNickname() : room.getUser1().getNickname(),
+                    opIsUser2 ? room.getUser2().getProfileImage() : room.getUser1().getProfileImage()
             );
             roomResponse.setNotReadCount(countNotRead(room.getId(), userId));
             messageRoomResponses.add(roomResponse);
         }
         return messageRoomResponses;
     }
-    
+
     //TODO 리포지토리 메소드가 JPQL을 이용하면 쿼리 횟수 2->1로 최적화할 여지 있음
     //유저가 채팅방에서 읽지 않은 채팅 갯수를 반환
     private long countNotRead(long roomId, String userId) {
