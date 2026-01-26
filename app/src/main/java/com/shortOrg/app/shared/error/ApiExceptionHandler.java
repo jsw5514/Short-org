@@ -2,6 +2,7 @@ package com.shortOrg.app.shared.error;
 
 import com.shortOrg.app.shared.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -39,6 +40,12 @@ public class ApiExceptionHandler {
     public ResponseEntity<?> handleTokenReused(TokenReusedException e) {
         e.printStackTrace();
         return ResponseEntity.status(401).body(err("Unauthorized", "Invalid Refresh Token. Please login again."));
+    }
+    
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest().body(err("Not Supported Message", e.getMessage()));
     }
     
     @ExceptionHandler(Exception.class)
