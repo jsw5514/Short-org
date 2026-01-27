@@ -32,7 +32,7 @@ public class UserController {
     // 프로필 조회
     @GetMapping("/users/{userId}/profile")
     public ResponseEntity<?> getProfile(@PathVariable("userId") String id){
-        ProfileRequest user = userService.userProfile(id); // 수정 해야됨
+        ProfileRequest user = userService.userProfile(id);
 
         if(user != null){
             return ResponseEntity.ok(user);

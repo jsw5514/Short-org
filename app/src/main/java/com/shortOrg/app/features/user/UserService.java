@@ -56,6 +56,8 @@ public class UserService {
 
     // 프로필 조회
     public ProfileRequest userProfile(String id) {
+        log.info("조회하려는 아이디: {}", id);
+
         ProfileRequest userDto = new ProfileRequest();
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("프로필 가져오기 실패"));
 

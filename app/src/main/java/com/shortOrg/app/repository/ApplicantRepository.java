@@ -23,4 +23,10 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     long deleteByPost_IdAndUser_Id(Long postId, String userId);
 
     Long countByPost_Id(Long post_id);
+
+
+    List<Applicant> findByUserIdAndPostIdIn(String userId, List<Long> postId);
+
+    @Query("select a.post.id, count(a) from Applicant a where a.post.id IN:postIds group by a.post.id")
+    List<Object[]> countByPostIn(@Param("postIds") List<Long> postIds);
 }

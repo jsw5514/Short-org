@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,15 +36,12 @@ public class PostService {
     }
 
     //TODO N+1 쿼리 수정
+    // 카테고리별 조회
     @Transactional(readOnly = true)
     public List<PostResponse> getPosts(String category, String userId) {
         List<Post> posts = postRepository.findByCategory(category);
-        
-        List<PostResponse> resultList = new ArrayList<>();
-        for(Post post : posts) {
-            resultList.add(postToPostResponse(post, userId));
-        }
-        return resultList;
+
+        return convertToPostResponses(posts, userId);
     }
 
     @Transactional
@@ -89,27 +88,19 @@ public class PostService {
     }
 
     //TODO N+1 쿼리 수정
+    // 내 주변 조회
     @Transactional(readOnly = true)
     public List<PostResponse> showNearby(Double latitude, Double longitude, Integer radiusMeters, String category, String userId) {
         List<Post> posts = postRepository.findNearByPosts(longitude, latitude, radiusMeters, category);
-
-        List<PostResponse> resultList = new ArrayList<>();
-        for(Post post : posts) {
-            resultList.add(postToPostResponse(post, userId));
-        }
-        return resultList;
+        return convertToPostResponses(posts, userId);
     }
 
     //TODO N+1 쿼리 수정
+    // 전체 조회
     @Transactional(readOnly = true)
     public List<PostResponse> getAllPosts(String userId) {
         List<Post> posts = postRepository.findAll();
-
-        List<PostResponse> resultList = new ArrayList<>();
-        for(Post post : posts) {
-            resultList.add(postToPostResponse(post, userId));
-        }
-        return resultList;
+        return convertToPostResponses(posts, userId);
     }
 
     @Transactional(readOnly = true)
@@ -118,5 +109,44 @@ public class PostService {
         return posts.stream()
                 .map(postMapper::fromDistanceView)
                 .toList();
+    }
+
+    private List<PostResponse> convertToPostResponses(List<Post> posts, String userId){
+        if(posts.isEmpty())
+            return new ArrayList<>();
+
+        // 게시글 Id 리스트 추출 (in 절에 넣기위해 ??)
+        List<Long> postIds = posts.stream().map(Post::getId).toList();
+
+        // 참여자 수 조회 (Map으로 변환)
+        Map<Long, Long> countMap = applicantRepository.countByPostIn(postIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        obj -> (Long) obj[0], // postId
+                        obj -> (Long) obj[1] // count
+                ));
+
+        // 내 참여 상태 조회 (Map으로 변환)
+        Map<Long, Applicant> myApplicantMap = applicantRepository.findByUserIdAndPostIdIn(userId, postIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        app-> app.getPost().getId(),
+                        app -> app
+                ));
+
+        // 메모리에서 매핑
+        List<PostResponse> resultList = new ArrayList<>();
+        for(Post post: posts){
+            Long currentCount = countMap.getOrDefault(post.getId(), 0L);
+            Applicant myApplicant = myApplicantMap.get(post.getId());
+
+            resultList.add(postMapper.fromEntity(
+                    post,
+                    currentCount,
+                    ApplicantStatus.toString(myApplicant == null ? null : myApplicant.getState())
+            ));
+        }
+
+        return resultList;
     }
 }
